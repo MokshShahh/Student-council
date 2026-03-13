@@ -1,0 +1,74 @@
+
+# Node
+node_modules
+/dist
+/dist-server
+/out-tsc
+/outFiles
+
+# Compilation output
+/tmp
+/coverage
+.cache
+*.dat
+
+# IDE files
+.vscode/
+
+# Environment files
+.env
+.env.local
+
+# misc
+.sass-cache/
+/connect.lock
+/npm-debug.log
+/yarn-error.log
+/lerna-debug.log
+/report-*.html
+/api-extractor-temp/
+/benchmarks/*.js
+/benchmarks/*.map
+/test-perf/
+/webpack-internal/
+/tsconfig.tsbuildinfo
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# === Python / FastAPI specific ignores ===
+# Byte-code files
+*.pyc
+__pycache__/
+*.whl
+
+# Environment
+.venv/
+venv/
+env/
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test and coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Specific to FastAPI/Python project templates
+*.log
+test.db
+instance/
+.netlify/
+site/
+docs_build/
