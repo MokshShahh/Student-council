@@ -1,0 +1,24 @@
+<h2>Events</h2>
+
+<div class="container">
+
+<form (submit)="addEvent()">
+
+<input type="text" placeholder="Event Title" [(ngModel)]="title" name="title" required>
+
+<input type="text" placeholder="Description" [(ngModel)]="description" name="description" required>
+
+<button type="submit">Add Event</button>
+
+</form>
+
+<hr>
+
+<h3>Approved Events</h3>
+
+<div *ngFor="let event of events">
+  <h4>{{event.title}}</h4>
+  <p>{{event.description}}</p>
+</div>
+
+</div>

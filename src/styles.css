@@ -1,0 +1,117 @@
+body{
+font-family: Arial;
+background-color:#f4f6f9;
+}
+
+.container{
+width:350px;
+margin:60px auto;
+padding:25px;
+background:white;
+border-radius:8px;
+box-shadow:0 0 10px gray;
+}
+
+h1{
+text-align:center;
+}
+
+h2{
+text-align:center;
+}
+
+input{
+width:100%;
+padding:8px;
+margin-top:10px;
+}
+
+button{
+width:100%;
+padding:10px;
+margin-top:15px;
+background-color:#004aad;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background-color:#00337a;
+}
+
+nav{
+text-align:center;
+margin:20px;
+}
+
+a{
+text-decoration:none;
+margin:10px;
+font-weight:bold;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 40px;
+  background: #004aad;
+  color: white;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* HERO SECTION */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(to right, #004aad, #007bff);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 40px;
+}
+
+.hero p {
+  margin: 20px 0;
+}
+
+/* BUTTONS */
+.buttons .btn {
+  margin: 10px;
+  padding: 10px 20px;
+  background: white;
+  color: #004aad;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn.secondary {
+  background: yellow;
+  color: black;
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  justify-content: center;
+  margin: 40px;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  box-shadow: 0 0 10px gray;
+  border-radius: 10px;
+}
