@@ -1,23 +1,18 @@
-<div class="container">
+<div class="auth-box">
 
-<h2>Login</h2>
+  <h2>Welcome Back 👋</h2>
 
-<form (submit)="login()">
+  <input type="email" placeholder="Email" [(ngModel)]="email">
+  <input type="password" placeholder="Password" [(ngModel)]="password">
 
-<input type="email"
-placeholder="Email"
-[(ngModel)]="email"
-name="email"
-required>
+  <button (click)="login()">Login</button>
 
-<input type="password"
-placeholder="Password"
-[(ngModel)]="password"
-name="password"
-required>
+  <!-- Loader -->
+  <div *ngIf="loading" class="loader"></div>
 
-<button type="submit">Login</button>
-
-</form>
+  <p>
+    Don't have an account?
+    <a routerLink="/register">Register</a>
+  </p>
 
 </div>

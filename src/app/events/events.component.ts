@@ -16,17 +16,22 @@ export class EventsComponent {
 
   constructor(public eventService: EventService) {}
 
-  addEvent() {
-    this.eventService.addEvent({
-      title: this.title,
-      description: this.description,
-      approved: false
-    });
+addEvent() {
 
-    alert("Event sent to admin for approval");
+  console.log("Adding event..."); // DEBUG
 
-    this.title = '';
-    this.description = '';
-  }
+  this.eventService.addEvent({
+    title: this.title,
+    description: this.description,
+    approved: false
+  });
+
+  console.log(this.eventService.getEvents()); // DEBUG
+
+  alert("Event added!");
+
+  this.title = '';
+  this.description = '';
+}
 
 }

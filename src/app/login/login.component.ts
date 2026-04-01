@@ -1,18 +1,22 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
 
   email: string = '';
   password: string = '';
+  loading: boolean = false;
 
   login() {
+
+    // validation
     if(this.email === '' || this.password === ''){
       alert("Please fill all fields");
       return;
@@ -23,7 +27,17 @@ export class LoginComponent {
       return;
     }
 
-    alert("Login Successful!");
-  }
+    // start loading
+    this.loading = true;
 
+    // simulate server delay
+    setTimeout(() => {
+      this.loading = false;
+      alert("Login Successful!");
+
+      // optional: redirect later
+      // this.router.navigate(['/']);
+      
+    }, 1500);
+  }
 }
