@@ -144,3 +144,8 @@ vite.config.ts.timestamp-*
 .vite/
 .angular
 test
+
+*.pyc
+*.pyo
+*.pyd
+__pycache__/

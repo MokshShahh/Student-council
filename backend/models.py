@@ -23,7 +23,7 @@ class User(SQLModel, table=True):
 
 class Events(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    committee_id: int = Field(foreign_key="committee.id")
+    committee_id: int | None = Field(default=None, foreign_key="committee.id")
     name: str = Field(index=True)
     description: str | None = Field(default=None)
     registration_link: str | None = None

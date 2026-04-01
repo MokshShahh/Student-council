@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../event.service';
@@ -9,29 +9,44 @@ import { EventService } from '../event.service';
   imports: [FormsModule, CommonModule],
   templateUrl: './events.component.html'
 })
-export class EventsComponent {
+export class EventsComponent implements OnInit {
 
   title = '';
   description = '';
+  events = signal<any[]>([]);
 
-  constructor(public eventService: EventService) {}
+  constructor(private eventService: EventService) {}
 
-addEvent() {
+  ngOnInit() {
+    this.fetchEvents();
+  }
 
-  console.log("Adding event..."); // DEBUG
+  fetchEvents() {
+    this.eventService.getEvents().subscribe({
+      next: (data) => this.events.set(data),
+      error: (err) => console.error('Error fetching events:', err)
+    });
+  }
 
-  this.eventService.addEvent({
-    title: this.title,
-    description: this.description,
-    approved: false
-  });
+  addEvent() {
+    if (!this.title || !this.description) return;
 
-  console.log(this.eventService.getEvents()); // DEBUG
+    const newEvent = {
+      name: this.title, // Backend uses 'name'
+      description: this.description,
+      committee_id: 1 // Placeholder for now
+    };
 
-  alert("Event added!");
-
-  this.title = '';
-  this.description = '';
-}
-
+    this.eventService.addEvent(newEvent).subscribe({
+      next: (res) => {
+        alert("Event added!");
+        this.fetchEvents(); // Refresh list
+        this.title = '';
+        this.description = '';
+      },
+      error: (err) => {
+        alert("Error adding event. Make sure you are logged in!");
+      }
+    });
+  }
 }

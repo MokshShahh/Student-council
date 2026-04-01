@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +19,9 @@ export class RegisterComponent {
   confirmPassword = '';
 
   errors: any = {};
+  loading = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   validate() {
 
@@ -52,9 +57,23 @@ export class RegisterComponent {
   }
 
   register() {
-
     if (!this.validate()) return;
 
-    alert("Registration Successful!");
+    this.loading = true;
+
+    this.authService.register({ 
+      email: this.email, 
+      password: this.password 
+    }).subscribe({
+      next: (res) => {
+        this.loading = false;
+        alert("Registration Successful!");
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.loading = false;
+        alert(err.error?.detail || "Registration failed");
+      }
+    });
   }
 }

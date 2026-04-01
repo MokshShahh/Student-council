@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,13 +17,17 @@ export class LoginComponent {
 
   emailError = '';
   passwordError = '';
+  loginError = '';
   loading = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   validate() {
     let valid = true;
 
     this.emailError = '';
     this.passwordError = '';
+    this.loginError = '';
 
     // Email validation
     if (this.email === '') {
@@ -45,14 +51,20 @@ export class LoginComponent {
   }
 
   login() {
-
     if (!this.validate()) return;
 
     this.loading = true;
 
-    setTimeout(() => {
-      this.loading = false;
-      alert("Login Successful!");
-    }, 1500);
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (res) => {
+        this.loading = false;
+        alert("Login Successful!");
+        this.router.navigate(['/']); // Navigate to home after login
+      },
+      error: (err) => {
+        this.loading = false;
+        this.loginError = 'Invalid email or password';
+      }
+    });
   }
 }

@@ -1,27 +1,21 @@
-<h2>Events</h2>
+<h2>Upcoming Events</h2>
 
 <div class="container">
-
-<form (submit)="addEvent()">
-
-<input type="text" placeholder="Event Title" [(ngModel)]="title" name="title" required>
-
-<input type="text" placeholder="Description" [(ngModel)]="description" name="description" required>
-
-<button (click)="addEvent()">Add Event</button>
-
-</form>
-
-<hr>
-
-<h3>Approved Events</h3>
-
-<div *ngFor="let event of eventService.getEvents()">
-  <div *ngIf="event.approved">
-    <h4>{{event.title}}</h4>
-    <p>{{event.description}}</p>
+  <!-- Only show approved events to regular users -->
+  <div *ngFor="let event of events()">
+    <div class="event-card" *ngIf="event.is_approved">
+      <h4>{{event.name}}</h4>
+      <p>{{event.description}}</p>
+      <span class="badge">Approved</span>
+    </div>
   </div>
+
+  <hr>
+  
+  <h3>Submit New Event</h3>
+  <form (submit)="addEvent()">
+    <input type="text" placeholder="Event Title" [(ngModel)]="title" name="title" required>
+    <input type="text" placeholder="Description" [(ngModel)]="description" name="description" required>
+    <button type="submit">Submit for Approval</button>
+  </form>
 </div>
-
-
-
