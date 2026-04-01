@@ -8,7 +8,7 @@
 
 <input type="text" placeholder="Description" [(ngModel)]="description" name="description" required>
 
-<button type="submit">Add Event</button>
+<button (click)="addEvent()">Add Event</button>
 
 </form>
 
@@ -16,9 +16,12 @@
 
 <h3>Approved Events</h3>
 
-<div *ngFor="let event of events">
-  <h4>{{event.title}}</h4>
-  <p>{{event.description}}</p>
+<div *ngFor="let event of eventService.getEvents()">
+  <div *ngIf="event.approved">
+    <h4>{{event.title}}</h4>
+    <p>{{event.description}}</p>
+  </div>
 </div>
 
-</div>
+
+

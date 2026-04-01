@@ -1,117 +1,185 @@
-body{
-font-family: Arial;
-background-color:#f4f6f9;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+/* RESET */
+* {
+  box-sizing: border-box;
 }
 
-.container{
-width:350px;
-margin:60px auto;
-padding:25px;
-background:white;
-border-radius:8px;
-box-shadow:0 0 10px gray;
-}
-
-h1{
-text-align:center;
-}
-
-h2{
-text-align:center;
-}
-
-input{
-width:100%;
-padding:8px;
-margin-top:10px;
-}
-
-button{
-width:100%;
-padding:10px;
-margin-top:15px;
-background-color:#004aad;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-button:hover{
-background-color:#00337a;
-}
-
-nav{
-text-align:center;
-margin:20px;
-}
-
-a{
-text-decoration:none;
-margin:10px;
-font-weight:bold;
+/* BODY */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0f172a;
+  color: white;
 }
 
 /* NAVBAR */
 .navbar {
   display: flex;
   justify-content: space-between;
-  padding: 15px 40px;
-  background: #004aad;
-  color: white;
+  align-items: center;
+  padding: 20px 50px;
+  position: sticky;
+  top: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.navbar h2 {
+  margin: 0;
 }
 
 .navbar a {
   color: white;
-  margin-left: 15px;
+  margin-left: 20px;
   text-decoration: none;
-  font-weight: bold;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  color: #38bdf8;
 }
 
 /* HERO SECTION */
 .hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 80px 20px;
-  background: linear-gradient(to right, #004aad, #007bff);
-  color: white;
+  background: radial-gradient(circle at center, #1e293b, #020617);
+  animation: fadeIn 1.5s ease-in;
+  padding: 20px;
 }
 
 .hero h1 {
-  font-size: 40px;
+  font-size: 60px;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 .hero p {
-  margin: 20px 0;
+  font-size: 20px;
+  opacity: 0.8;
 }
 
 /* BUTTONS */
-.buttons .btn {
+button {
+  padding: 12px 20px;
   margin: 10px;
-  padding: 10px 20px;
-  background: white;
-  color: #004aad;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(59,130,246,0.5);
 }
 
-.btn.secondary {
-  background: yellow;
-  color: black;
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(59,130,246,0.8);
 }
 
-/* FEATURES */
-.features {
-  display: flex;
-  justify-content: center;
-  margin: 40px;
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
   gap: 20px;
+  padding: 40px;
 }
 
+/* CARD */
 .card {
-  background: white;
+  background: rgba(255,255,255,0.05);
   padding: 20px;
-  width: 250px;
+  border-radius: 15px;
+  backdrop-filter: blur(15px);
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+/* INPUTS */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+/* AUTH BOX (LOGIN/REGISTER) */
+.auth-box {
+  width: 350px;
+  margin: auto;
+  margin-top: 80px;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
   text-align: center;
-  box-shadow: 0 0 10px gray;
-  border-radius: 10px;
+  animation: fadeIn 1s ease-in;
+}
+
+/* LOADER */
+.loader {
+  border: 5px solid #1e293b;
+  border-top: 5px solid #38bdf8;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* SECTION */
+.section {
+  padding: 40px;
+  text-align: center;
+}
+
+/* HR */
+hr {
+  border: 1px solid rgba(255,255,255,0.2);
+  margin: 40px 0;
+}
+
+/* ANIMATIONS */
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error {
+  color: #f87171;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
 }
