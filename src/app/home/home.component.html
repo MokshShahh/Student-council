@@ -1,73 +1,27 @@
-<div class="hero">
-  <h1>MPSTME Student Council</h1>
-  <p>Empowering Students • Organizing Events • Building Community</p>
-
-  <div class="buttons">
-    <a routerLink="/events" class="btn">Explore Events</a>
-    <a routerLink="/register" class="btn secondary">Join Now</a>
-  </div>
+<div class="card">
+  <h1>Welcome to MPSTME Student Council</h1>
+  <p>Connecting students through events, culture, and leadership.</p>
 </div>
 
-<!-- ABOUT -->
-<section class="about">
+<div class="card">
   <h2>What is MPSTME?</h2>
   <p>
-    MPSTME Student Council is the central body representing students,
-    organizing cultural, technical and social events, and managing committees.
+    Mukesh Patel School of Technology Management & Engineering is a premier
+    institute of NMIMS focused on innovation and excellence.
   </p>
-</section>
+</div>
 
-<!-- COMMITTEES -->
-<section class="committees">
+<div class="card">
   <h2>Our Committees</h2>
-
-  <div class="cards">
-
-    <div class="card" routerLink="/events">
-      <h3>🎭 Cultural</h3>
-      <p>Dance, music, drama and creative events</p>
-    </div>
-
-    <div class="card">
-      <h3>⚽ Sports</h3>
-      <p>Sports events and competitions</p>
-    </div>
-
-    <div class="card">
-      <h3>💻 Technical</h3>
-      <p>Hackathons, coding and workshops</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- EVENTS PREVIEW -->
-<section class="events-preview">
-  <h2>Upcoming Events</h2>
-
-  <div *ngFor="let event of events">
-    <div *ngIf="event.approved" class="event-card">
-      <h4>{{event.title}}</h4>
-      <p>{{event.description}}</p>
-    </div>
-  </div>
-</section>
-
-<!-- NEWS -->
-<section class="news">
-  <h2>Latest News</h2>
-
   <ul>
-    <li>🎉 Cultural Fest coming soon!</li>
-    <li>📢 Registrations open for committees</li>
-    <li>🏆 Sports meet next month</li>
+    <li>Cultural Committee</li>
+    <li>Technical Committee</li>
+    <li>Sports Committee</li>
+    <li>Media & PR</li>
   </ul>
-</section>
+</div>
 
-<!-- APPLY -->
-<section class="apply">
-  <h2>Join a Committee</h2>
-  <p>Be a part of something amazing</p>
-
-  <a routerLink="/register" class="btn">Apply Now</a>
-</section>
+<div class="card">
+  <h2>Upcoming Events</h2>
+  <p>Explore exciting college events and participate actively.</p>
+</div>

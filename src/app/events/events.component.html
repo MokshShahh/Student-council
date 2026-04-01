@@ -23,22 +23,5 @@
   </div>
 </div>
 
-<h2>Events</h2>
 
-<form (submit)="addEvent()">
-  <input [(ngModel)]="title" name="title" placeholder="Title" required>
-  <input [(ngModel)]="description" name="description" placeholder="Description" required>
-  <button>Add Event</button>
-</form>
 
-<hr>
-
-<h3>Approved Events</h3>
-
-<div *ngFor="let event of eventService.getEvents()">
-  <div *ngIf="event.approved">
-    <h4>{{event.title}}</h4>
-    <p>{{event.description}}</p>
-  </div>
-</div>
-</div>
