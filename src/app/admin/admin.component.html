@@ -1,0 +1,22 @@
+<h2>Admin Panel</h2>
+
+<h3>Pending Events</h3>
+
+<div *ngFor="let event of eventService.getEvents()">
+  <div *ngIf="!event.approved" class="card">
+    <h4>{{event.title}}</h4>
+    <p>{{event.description}}</p>
+
+    <button (click)="approve(event)">Approve</button>
+  </div>
+</div>
+
+<hr>
+
+<h3>Approved Events</h3>
+
+<div *ngFor="let event of eventService.getEvents()">
+  <div *ngIf="event.approved">
+    <h4>{{event.title}}</h4>
+  </div>
+</div>

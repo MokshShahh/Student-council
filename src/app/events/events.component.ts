@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-events',
@@ -10,24 +11,19 @@ import { CommonModule } from '@angular/common';
 })
 export class EventsComponent {
 
-  title: string = '';
-  description: string = '';
+  title = '';
+  description = '';
 
-  events: any[] = [
-    { title: 'Dance Competition', description: 'Annual cultural fest', approved: true }
-  ];
+  constructor(public eventService: EventService) {}
 
   addEvent() {
-
-    const newEvent = {
+    this.eventService.addEvent({
       title: this.title,
       description: this.description,
       approved: false
-    };
+    });
 
-    this.events.push(newEvent);
-
-    alert("Event submitted for approval!");
+    alert("Event sent to admin for approval");
 
     this.title = '';
     this.description = '';
