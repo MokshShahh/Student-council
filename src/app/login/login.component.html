@@ -1,20 +1,20 @@
 <div class="auth-box">
 
-  <h2>Welcome Back 👋</h2>
+  <h2>Login</h2>
 
   <input type="email" placeholder="Email" [(ngModel)]="email">
+  <div class="error" *ngIf="emailError">{{emailError}}</div>
+
   <input type="password" placeholder="Password" [(ngModel)]="password">
+  <div class="error" *ngIf="passwordError">{{passwordError}}</div>
 
   <button (click)="login()">Login</button>
 
-  <!-- Loader -->
   <div *ngIf="loading" class="loader"></div>
 
-
   <p>
-  Don't have an account?
-  <a routerLink="/register">Register</a>
-</p>
-
+    Don't have an account?
+    <a routerLink="/register">Register</a>
+  </p>
 
 </div>

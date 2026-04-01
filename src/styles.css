@@ -176,3 +176,10 @@ hr {
     transform: translateY(0);
   }
 }
+
+.error {
+  color: #f87171;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
+}

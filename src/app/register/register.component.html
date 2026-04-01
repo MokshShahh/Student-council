@@ -1,41 +1,22 @@
-<div class="container">
+<div class="auth-box">
 
-<h2>Student Registration</h2>
+  <h2>Register</h2>
 
-<form (submit)="register()">
+  <input placeholder="Full Name" [(ngModel)]="name">
+  <div class="error" *ngIf="errors.name">{{errors.name}}</div>
 
-<input type="text"
-placeholder="Full Name"
-[(ngModel)]="name"
-name="name"
-required>
+  <input placeholder="Email" [(ngModel)]="email">
+  <div class="error" *ngIf="errors.email">{{errors.email}}</div>
 
-<input type="email"
-placeholder="Email"
-[(ngModel)]="email"
-name="email"
-required>
+  <input placeholder="Phone Number" [(ngModel)]="phone">
+  <div class="error" *ngIf="errors.phone">{{errors.phone}}</div>
 
-<input type="text"
-placeholder="Phone Number"
-[(ngModel)]="phone"
-name="phone"
-required>
+  <input type="password" placeholder="Password" [(ngModel)]="password">
+  <div class="error" *ngIf="errors.password">{{errors.password}}</div>
 
-<input type="password"
-placeholder="Password"
-[(ngModel)]="password"
-name="password"
-required>
+  <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword">
+  <div class="error" *ngIf="errors.confirmPassword">{{errors.confirmPassword}}</div>
 
-<input type="password"
-placeholder="Confirm Password"
-[(ngModel)]="confirmPassword"
-name="confirmPassword"
-required>
-
-<button type="submit">Register</button>
-
-</form>
+  <button (click)="register()">Register</button>
 
 </div>
