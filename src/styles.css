@@ -183,3 +183,11 @@ hr {
   margin-top: 5px;
   text-align: left;
 }
+
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}

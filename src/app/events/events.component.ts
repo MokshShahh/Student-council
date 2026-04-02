@@ -2,6 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../event.service';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-events',

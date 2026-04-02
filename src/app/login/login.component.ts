@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+<<<<<<< Updated upstream
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+=======
+import { HttpClient } from '@angular/common/http';
+
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html'
+  
 })
 export class LoginComponent {
 
@@ -50,11 +56,18 @@ export class LoginComponent {
     return valid;
   }
 
+<<<<<<< Updated upstream
   login() {
     if (!this.validate()) return;
+=======
+  constructor(private http: HttpClient) {}
 
-    this.loading = true;
+login() {
+>>>>>>> Stashed changes
 
+  if (!this.validate()) return;
+
+<<<<<<< Updated upstream
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (res) => {
         this.loading = false;
@@ -68,3 +81,26 @@ export class LoginComponent {
     });
   }
 }
+=======
+  this.loading = true;
+
+  this.http.post('http://localhost:5000/login', {
+    email: this.email,
+    password: this.password
+  }).subscribe((res: any) => {
+
+    this.loading = false;
+
+    // store token
+    localStorage.setItem('token', res.token);
+
+    alert("Login Successful!");
+
+  }, err => {
+    this.loading = false;
+    alert("Invalid credentials");
+  });
+
+}
+}
+>>>>>>> Stashed changes
