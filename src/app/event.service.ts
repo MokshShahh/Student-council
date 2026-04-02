@@ -1,25 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class EventService {
-  private apiUrl = 'http://localhost:8000/api/events';
 
   constructor(private http: HttpClient) {}
 
-  getEvents(): Observable<any[]> {
-    // Interceptor adds Authorization header automatically
-    return this.http.get<any[]>(this.apiUrl);
+  getEvents() {
+    return this.http.get('http://localhost:5000/events');
   }
 
-  addEvent(event: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, event);
+  addEvent(event: any) {
+    return this.http.post('http://localhost:5000/events', event);
   }
 
-  approveEvent(eventId: number): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/${eventId}/approve`, {});
+  approveEvent(id: number) {
+    return this.http.put(`http://localhost:5000/events/${id}/approve`, {});
   }
 }

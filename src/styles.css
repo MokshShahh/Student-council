@@ -191,3 +191,13 @@ select {
   border-radius: 8px;
   border: none;
 }
+
+.link {
+  color: #38bdf8;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

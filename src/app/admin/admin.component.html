@@ -1,44 +1,17 @@
 <h2>Admin Dashboard</h2>
 
-<div class="admin-container">
-  
-  <div *ngIf="errorMessage()" class="error-banner" style="color: red; background: #fee; padding: 10px; border: 1px solid red;">
-    {{ errorMessage() }}
+<div *ngFor="let event of events()">
+  <div class="card">
+
+    <h4>{{event.name}}</h4>
+    <p>{{event.description}}</p>
+
+    <p *ngIf="event.approved" style="color: lightgreen;">Approved</p>
+    <p *ngIf="!event.approved" style="color: orange;">Pending</p>
+
+    <button *ngIf="!event.approved" (click)="approve(event)">
+      Approve
+    </button>
+
   </div>
-
-  <section>
-    <h3>Pending Events</h3>
-    <p *ngIf="pendingEvents().length === 0 && !errorMessage()">No pending events found.</p>
-
-    <div *ngFor="let event of pendingEvents()">
-      <div class="card" style="opacity: 0.7; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
-        <h4>{{event.name}}</h4>
-        <p>{{event.description}}</p>
-                <button (click)="approve(event)">Approve</button>
-
-      </div>
-    </div>
-  </section>
-
-  <hr>
-
-  <section>
-    <h3>Approved Events</h3>
-    <p *ngIf="approvedEvents().length === 0 && !errorMessage()">No approved events found.</p>
-
-    <div *ngFor="let event of approvedEvents()">
-      <div class="card" style="opacity: 0.7; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
-        <h4>{{event.name}}</h4>
-        <p>{{event.description}}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- DEBUG DATA -->
-  <hr>
-  <details>
-    <summary>Debug: Data View (Total: {{events().length}})</summary>
-    <p>Raw JSON:</p>
-    <pre>{{ events() | json }}</pre>
-  </details>
 </div>
