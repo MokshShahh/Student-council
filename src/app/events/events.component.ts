@@ -2,14 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../event.service';
-import { HttpClient } from '@angular/common/http';
-
 
 @Component({
   selector: 'app-events',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './events.component.html'
+  templateUrl: './events.component.html' // ✅ CORRECT
 })
 export class EventsComponent implements OnInit {
 
@@ -25,29 +23,33 @@ export class EventsComponent implements OnInit {
 
   fetchEvents() {
     this.eventService.getEvents().subscribe({
-      next: (data) => this.events.set(data),
-      error: (err) => console.error('Error fetching events:', err)
+      next: (data: any) => this.events.set(data),
+      error: (err) => console.error(err)
     });
   }
 
   addEvent() {
-    if (!this.title || !this.description) return;
+
+    if (!this.title || !this.description) {
+      alert("Fill all fields");
+      return;
+    }
 
     const newEvent = {
-      name: this.title, // Backend uses 'name'
+      name: this.title,
       description: this.description,
-      committee_id: 1 // Placeholder for now
+      committee_id: 1
     };
 
     this.eventService.addEvent(newEvent).subscribe({
-      next: (res) => {
+      next: () => {
         alert("Event added!");
-        this.fetchEvents(); // Refresh list
+        this.fetchEvents();
         this.title = '';
         this.description = '';
       },
-      error: (err) => {
-        alert("Error adding event. Make sure you are logged in!");
+      error: () => {
+        alert("Error adding event");
       }
     });
   }
