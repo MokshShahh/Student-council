@@ -11,6 +11,11 @@
   <input placeholder="Phone Number" [(ngModel)]="phone">
   <div class="error" *ngIf="errors.phone">{{errors.phone}}</div>
 
+  <select [(ngModel)]="role" class="role-select">
+    <option value="student">Student</option>
+    <option value="committee">Committee</option>
+  </select>
+
   <input type="password" placeholder="Password" [(ngModel)]="password">
   <div class="error" *ngIf="errors.password">{{errors.password}}</div>
 

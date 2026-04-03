@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
   selector: 'app-register',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './register.component.html'
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
 })
 export class RegisterComponent {
 
@@ -17,6 +18,7 @@ export class RegisterComponent {
   phone = '';
   password = '';
   confirmPassword = '';
+  role = 'student';
 
   errors: any = {};
   loading = false;
@@ -61,14 +63,32 @@ export class RegisterComponent {
 
     this.loading = true;
 
-    this.authService.register({ 
+    const registrationData = { 
       email: this.email, 
-      password: this.password 
-    }).subscribe({
+      password: this.password,
+      full_name: this.name,
+      phone: this.phone,
+      role: this.role
+    };
+
+    this.authService.register(registrationData).subscribe({
       next: (res) => {
-        this.loading = false;
-        alert("Registration Successful!");
-        this.router.navigate(['/login']);
+        // Auto-login after registration to redirect to profile setup if needed
+        this.authService.login({ email: this.email, password: this.password }).subscribe({
+          next: () => {
+            this.loading = false;
+            alert("Registration Successful!");
+            if (this.role === 'committee') {
+              this.router.navigate(['/committee/profile-setup']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          },
+          error: () => {
+             this.loading = false;
+             this.router.navigate(['/login']);
+          }
+        });
       },
       error: (err) => {
         this.loading = false;

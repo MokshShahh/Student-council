@@ -15,6 +15,10 @@ export class EventService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getAdminEvents(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8000/api/admin/events');
+  }
+
   addEvent(event: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, event);
   }

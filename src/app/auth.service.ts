@@ -22,7 +22,7 @@ export class AuthService {
     try {
       const decoded: any = jwtDecode(token);
       console.log('Decoded Token:', decoded);
-      this.currentUser.set({ email: decoded.email, token });
+      this.currentUser.set({ email: decoded.email, token, committee_id: decoded.committee_id });
       this.userRole.set(decoded.role);
       console.log('User Role Set To:', this.userRole());
     } catch (e) {
@@ -47,12 +47,7 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    const body = {
-      email: userData.email,
-      password: userData.password,
-      role: 'student'
-    };
-    return this.http.post<any>(`${this.apiUrl}/register`, body);
+    return this.http.post<any>(`${this.apiUrl}/register`, userData);
   }
 
   logout() {
@@ -66,6 +61,10 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.userRole() === 'admin';
+    return this.userRole()?.toLowerCase() === 'admin';
+  }
+
+  isCommittee(): boolean {
+    return this.userRole()?.toLowerCase() === 'committee';
   }
 }

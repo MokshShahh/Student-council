@@ -1,15 +1,23 @@
 <div class="navbar">
-  <h2>MPSTME Student Council</h2>
+  <h2 routerLink="/">CouncilHub</h2>
 
   <div>
-    <a routerLink="">Home</a>
+    <a routerLink="/">Home</a>
     <a routerLink="/events">Events</a>
-    <a routerLink="/admin">Admin</a>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/register">Register</a>
+    
+    <ng-container *ngIf="auth.currentUser()">
+      <a routerLink="/admin" *ngIf="auth.isAdmin()">Admin</a>
+      <a routerLink="/committee/dashboard" *ngIf="auth.isCommittee()">Dashboard</a>
+      <a (click)="logout()" style="cursor: pointer;">Logout</a>
+    </ng-container>
+
+    <ng-container *ngIf="!auth.currentUser()">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </ng-container>
   </div>
 </div>
 
-<div class="container">
+<div class="main-content">
   <router-outlet></router-outlet>
 </div>

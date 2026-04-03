@@ -29,7 +29,7 @@ export class AdminComponent implements OnInit {
   }
 
   fetchEvents() {
-    this.eventService.getEvents().subscribe({
+    this.eventService.getAdminEvents().subscribe({
       next: (data) => {
         console.log('Admin Dashboard: Fetched Events:', data);
         this.events.set(data);

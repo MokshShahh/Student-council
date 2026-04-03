@@ -25,6 +25,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: str | None = None
     role: str | None = None
+    committee_id: int | None = None
 
 postgresql_url = os.getenv("pg_url", "sqlite:///./test.db")
 engine = create_engine(postgresql_url, echo=True)
@@ -75,11 +76,12 @@ async def get_current_user(
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("email")
         role: str = payload.get("role")
+        committee_id: int | None = payload.get("committee_id")
         
         if email is None or role is None:
             raise credentials_exception
             
-        token_data = TokenData(email=email, role=role)
+        token_data = TokenData(email=email, role=role, committee_id=committee_id)
     except Exception:
         raise credentials_exception
         
@@ -109,7 +111,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
-    # Only use this during development to sync schema changes
+    # Only use this during development to sync schema changes if needed
     # SQLModel.metadata.drop_all(engine) 
     create_db_and_tables()
 
@@ -120,6 +122,8 @@ async def root():
 class UserRegister(BaseModel):
     email: str
     password: str
+    full_name: str | None = None
+    phone: str | None = None
     role: UserRole = UserRole.STUDENT
 
 @app.post("/register")
@@ -137,6 +141,8 @@ async def register_user(
     new_user = User(
         email=user_data.email,
         hashed_password=get_password_hash(user_data.password),
+        full_name=user_data.full_name,
+        phone=user_data.phone,
         role=user_data.role
     )
     
@@ -158,14 +164,30 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    token_data = {"email": user.email, "role": user.role}
+    if user.committee_id:
+        token_data["committee_id"] = user.committee_id
+        
     access_token = create_access_token(
-        data={"email": user.email, "role": user.role}, 
+        data=token_data, 
         expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
 @app.get("/api/events")
 async def get_events(session: Annotated[Session, Depends(get_session)]):
+    statement = select(Events).where(Events.is_approved == True)
+    results = session.exec(statement)
+    return results.all()
+
+@app.get("/api/admin/events")
+async def get_all_events_admin(
+    session: Annotated[Session, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
     statement = select(Events)
     results = session.exec(statement)
     return results.all()
@@ -195,7 +217,97 @@ async def add_event(
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
+    if current_user.role != UserRole.COMMITTEE and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized to create events")
+    
+    if current_user.role == UserRole.COMMITTEE:
+        if not current_user.committee_id:
+            raise HTTPException(status_code=400, detail="Committee profile not set up")
+        event.committee_id = current_user.committee_id
+        event.is_approved = False # Needs admin approval
+        
     session.add(event)
     session.commit()
     session.refresh(event)
     return event
+
+@app.get("/api/committee/{committee_id}")
+async def get_committee_public(
+    committee_id: int,
+    session: Annotated[Session, Depends(get_session)]
+):
+    committee = session.get(Committee, committee_id)
+    if not committee:
+        raise HTTPException(status_code=404, detail="Committee not found")
+    
+    statement = select(Events).where(Events.committee_id == committee_id, Events.is_approved == True)
+    events = session.exec(statement).all()
+    
+    return {"committee": committee, "events": events}
+
+@app.get("/api/committee/profile/me")
+async def get_my_committee_profile(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE:
+        raise HTTPException(status_code=403, detail="Not a committee user")
+    
+    if not current_user.committee_id:
+        return None
+        
+    committee = session.get(Committee, current_user.committee_id)
+    return committee
+
+@app.post("/api/committee/profile")
+async def setup_committee_profile(
+    committee_data: Committee,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    if current_user.committee_id:
+        # Update existing
+        db_committee = session.get(Committee, current_user.committee_id)
+        if not db_committee:
+             raise HTTPException(status_code=404, detail="Committee profile missing")
+        
+        db_committee.name = committee_data.name
+        db_committee.description = committee_data.description
+        db_committee.long_description = committee_data.long_description
+        db_committee.logo_url = committee_data.logo_url
+        db_committee.contact_info = committee_data.contact_info
+        
+        session.add(db_committee)
+    else:
+        # Create new
+        new_committee = Committee(
+            name=committee_data.name,
+            description=committee_data.description,
+            long_description=committee_data.long_description,
+            logo_url=committee_data.logo_url,
+            contact_info=committee_data.contact_info
+        )
+        session.add(new_committee)
+        session.commit()
+        session.refresh(new_committee)
+        
+        current_user.committee_id = new_committee.id
+        session.add(current_user)
+        
+    session.commit()
+    return {"message": "Profile updated successfully"}
+
+@app.get("/api/committee/dashboard/events")
+async def get_committee_events(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE or not current_user.committee_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    statement = select(Events).where(Events.committee_id == current_user.committee_id)
+    results = session.exec(statement)
+    return results.all()
