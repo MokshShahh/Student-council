@@ -1,0 +1,116 @@
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-brand">
+      <div class="sb-icon"><i class="fas fa-university"></i></div>
+      <div>
+        <div class="sb-title">Council</div>
+        <div class="sb-role">Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <span class="sb-label">MENU</span>
+
+    <a class="nav-item" [class.active]="currentPage==='dashboard'" (click)="go('dashboard')">
+      <i class="fas fa-th-large"></i><span class="nav-text">Dashboard</span>
+    </a>
+
+    <a class="nav-item" [class.active]="currentPage==='news'" (click)="go('news')">
+      <i class="fas fa-newspaper"></i><span class="nav-text">News</span>
+    </a>
+
+    <a class="nav-item" [class.active]="currentPage==='committee'" (click)="go('committee')">
+      <i class="fas fa-users"></i><span class="nav-text">Committee</span>
+    </a>
+
+    <a class="nav-item" (click)="goToAddEvent()">
+      <i class="fas fa-calendar-plus"></i><span class="nav-text">Add Event</span>
+    </a>
+
+    <a class="nav-item" [class.active]="currentPage==='status'" (click)="go('status')">
+      <i class="fas fa-chart-bar"></i><span class="nav-text">Status</span>
+    </a>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-avatar">A</div>
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+
+    <a class="nav-item nav-logout" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+<header class="topnav">
+  <div class="breadcrumb">
+    <span>Dashboard</span>
+  </div>
+</header>
+
+<div class="page-area">
+
+<!-- DASHBOARD -->
+<div class="page" [class.active]="currentPage==='dashboard'">
+  <div class="pg-head">
+    <h2>Dashboard</h2>
+    <p>Welcome back, Admin!</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><i class="fas fa-calendar-alt"></i><span>Total Events</span></div>
+    <div class="stat-card"><i class="fas fa-users"></i><span>Committees</span></div>
+    <div class="stat-card"><i class="fas fa-file-alt"></i><span>Applications</span></div>
+    <div class="stat-card"><i class="fas fa-newspaper"></i><span>News</span></div>
+  </div>
+</div>
+
+<!-- NEWS -->
+<div class="page" [class.active]="currentPage==='news'">
+  <div class="pg-head">
+    <h2>News</h2>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">News Item</div>
+  </div>
+</div>
+
+<!-- COMMITTEE -->
+<div class="page" [class.active]="currentPage==='committee'">
+  <div class="pg-head">
+    <h2>Committee</h2>
+  </div>
+
+  <div class="grid-4">
+    <div class="card">Committee Card</div>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="page" [class.active]="currentPage==='status'">
+  <div class="pg-head">
+    <h2>Status</h2>
+  </div>
+
+  <table>
+    <tr><th>Name</th><th>Status</th></tr>
+    <tr><td>Student</td><td>Pending</td></tr>
+  </table>
+</div>
+
+</div>
+</div>
+</div>

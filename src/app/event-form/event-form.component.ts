@@ -1,44 +1,33 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { EventService } from '../event.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-form',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule],
   templateUrl: './event-form.component.html'
 })
 export class EventFormComponent {
 
   title = '';
   description = '';
-  date = '';
-  venue = '';
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService, private router: Router) {}
 
-  submitEvent() {
-
+  submit() {
     if (!this.title || !this.description) {
       alert("Fill all fields");
       return;
     }
 
-    const event = {
+    this.eventService.addEvent({
       name: this.title,
-      description: this.description,
-      date: this.date,
-      venue: this.venue,
-      approved: false
-    };
-
-    this.eventService.addEvent(event).subscribe(() => {
-      alert("Event submitted!");
-      this.title = '';
-      this.description = '';
-      this.date = '';
-      this.venue = '';
+      description: this.description
+    }).subscribe(() => {
+      alert("Event added!");
+      this.router.navigate(['/events']);
     });
   }
 }
