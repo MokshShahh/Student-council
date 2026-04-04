@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventService } from '../event.service';
+import { EVENTS } from '../data';
 
 @Component({
   selector: 'app-events',
@@ -8,15 +8,20 @@ import { EventService } from '../event.service';
   imports: [CommonModule],
   templateUrl: './events.component.html'
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent {
 
-  events: any[] = [];
+  events = EVENTS;
+  selectedEvent: any = null;
 
-  constructor(private eventService: EventService) {}
+  openEvent(event: any) {
+    this.selectedEvent = event;
+  }
 
-  ngOnInit() {
-    this.eventService.getEvents().subscribe(data => {
-      this.events = data;
-    });
+  closeEvent() {
+    this.selectedEvent = null;
+  }
+
+  register() {
+    alert("Registered successfully!");
   }
 }

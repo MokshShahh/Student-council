@@ -1,36 +1,29 @@
-<h2>Upcoming Events</h2>
+<div class="page-area">
 
-<div class="events-grid">
-  <div class="event-card" *ngFor="let event of events">
+  <h2>All Events</h2>
 
-    <div class="card-image">
-      <img [src]="event.banner || 'https://via.placeholder.com/400x200'" />
-      <div class="category-badge" *ngIf="event.is_approved">Approved</div>
-    </div>
-
-    <div class="card-content">
-      <h3>{{event.name}}</h3>
-      <p class="description">{{event.description}}</p>
-
-      <div class="event-meta">
-        <div class="meta-item" *ngIf="event.start_time">
-          📅 {{event.start_time | date:'mediumDate'}}
-        </div>
+  <div class="grid-4">
+    <div class="comm-card" *ngFor="let e of events" (click)="openEvent(e)">
+      <div class="comm-top" [style.background]="e.gradient">
+        <i class="fas" [ngClass]="e.icon"></i>
       </div>
 
-      <div class="card-actions">
-        <a *ngIf="event.registration_link"
-           [href]="event.registration_link"
-           target="_blank"
-           class="btn btn-primary">
-           Register
-        </a>
+      <div class="comm-body">
+        <h4>{{e.name}}</h4>
+        <p>{{e.shortDesc}}</p>
+        <span>{{e.date}}</span>
       </div>
     </div>
-
   </div>
-</div>
 
-<div *ngIf="events.length === 0">
-  No events available
+  <!-- MODAL -->
+  <div class="modal" *ngIf="selectedEvent">
+    <div class="modal-box">
+      <h3>{{selectedEvent.name}}</h3>
+      <p>{{selectedEvent.shortDesc}}</p>
+      <button (click)="register()">Register</button>
+      <button (click)="closeEvent()">Close</button>
+    </div>
+  </div>
+
 </div>

@@ -1,20 +1,50 @@
-export const USERS = [
-  { id: 1, name: 'Admin User', email: 'admin@council.com', password: 'admin123', role: 'admin' },
-  { id: 2, name: 'Riya Sharma', email: 'student@council.com', password: 'student123', role: 'student' }
+export const EVENTS = [
+  {
+    id: 1,
+    name: 'Tech Fest 2026',
+    committee: 'Technical & Research',
+    shortDesc: 'Biggest annual tech celebration',
+    date: 'March 15-17, 2026',
+    gradient: 'linear-gradient(135deg,#00c6ff,#0072ff)',
+    icon: 'fa-laptop-code'
+  },
+  {
+    id: 2,
+    name: 'National Hackathon',
+    committee: 'Technical & Research',
+    shortDesc: '36 hours innovation',
+    date: 'April 5-6, 2026',
+    gradient: 'linear-gradient(135deg,#667eea,#764ba2)',
+    icon: 'fa-code'
+  }
 ];
 
 export const COMMITTEES = [
-  { id:'tech', name:'Technical & Research', icon:'fa-microchip', gradient:'linear-gradient(135deg,#0891b2,#0e7490)', members:32, events:12 },
-  { id:'cult', name:'Cult Com', icon:'fa-theater-masks', gradient:'linear-gradient(135deg,#7c3aed,#6d28d9)', members:40, events:15 }
+  {
+    name: 'Technical & Research',
+    members: 32,
+    gradient: 'linear-gradient(135deg,#00c6ff,#0072ff)',
+    icon: 'fa-microchip',
+    desc: 'Build tech solutions'
+  },
+  {
+    name: 'Cult Com',
+    members: 40,
+    gradient: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+    icon: 'fa-theater-masks',
+    desc: 'Cultural activities'
+  }
 ];
 
-export const EVENTS = [
+export const NEWS = [
   {
-    id:1,
-    name:'Tech Fest 2026',
-    shortDesc:'The biggest annual technology celebration',
-    icon:'fa-laptop-code',
-    gradient:'linear-gradient(135deg,#0ea5e9,#2563eb,#4f46e5)',
-    committee:'Technical & Research'
+    title: 'Hackathon Announced',
+    desc: 'Registrations open now',
+    date: 'Feb 2026'
+  },
+  {
+    title: 'Fest Coming Soon',
+    desc: 'Biggest tech fest incoming',
+    date: 'Jan 2026'
   }
 ];

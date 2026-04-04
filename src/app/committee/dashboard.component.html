@@ -8,6 +8,7 @@
         <div>
           <div class="sb-title">Council</div>
           <div class="sb-role">Student</div>
+          
         </div>
       </div>
 
@@ -84,7 +85,7 @@
               <h3>{{ev.name}}</h3>
               <p>{{ev.shortDesc}}</p>
 
-              <button class="btn-view">
+              <button class="btn-view" routerLink="/events">
                 <i class="fas fa-eye"></i> View Details
               </button>
             </div>
@@ -104,6 +105,7 @@
       <!-- COMMITTEES -->
       <div class="sec-title">
         <h3><i class="fas fa-users"></i> Our Committees</h3>
+        <a routerLink="/committee" class="nav-item"></a>
       </div>
 
       <div class="grid-4">
@@ -112,14 +114,77 @@
             <i class="fas" [ngClass]="c.icon"></i>
           </div>
 
+          
+
           <div class="comm-body">
             <h4>{{c.name}}</h4>
             <p>{{c.members}} Members</p>
           </div>
         </div>
       </div>
+<!-- QUICK ACTIONS -->
+<div class="sec-title">
+  <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+</div>
 
+<div class="grid-4">
+  <div class="comm-card" routerLink="/events">
+    <div class="comm-top" style="background: linear-gradient(135deg,#00c6ff,#0072ff)">
+      <i class="fas fa-calendar-plus"></i>
     </div>
+    <div class="comm-body">
+      <h4>Explore Events</h4>
+    </div>
+  </div>
+
+  <div class="comm-card">
+    <div class="comm-top" style="background: linear-gradient(135deg,#ff7e5f,#feb47b)">
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="comm-body">
+      <h4>Join Committee</h4>
+    </div>
+  </div>
+
+  <div class="comm-card">
+    <div class="comm-top" style="background: linear-gradient(135deg,#43e97b,#38f9d7)">
+      <i class="fas fa-newspaper"></i>
+    </div>
+    <div class="comm-body">
+      <h4>Latest News</h4>
+    </div>
+  </div>
+
+  <div class="comm-card">
+    <div class="comm-top" style="background: linear-gradient(135deg,#667eea,#764ba2)">
+      <i class="fas fa-user"></i>
+    </div>
+    <div class="comm-body">
+      <h4>My Profile</h4>
+    </div>
+  </div>
+</div>
+<div class="sec-title">
+  <h3><i class="fas fa-newspaper"></i> Latest News</h3>
+</div>
+
+<div class="grid-4">
+  <div class="comm-card">
+    <div class="comm-body">
+      <h4>Hackathon Announced</h4>
+      <p>Registrations open now</p>
+    </div>
+  </div>
+
+  <div class="comm-card">
+    <div class="comm-body">
+      <h4>Fest Coming Soon</h4>
+      <p>Biggest tech fest 2026</p>
+    </div>
+  </div>
+</div>
+    </div>
+    
   </div>
 
 </div>
