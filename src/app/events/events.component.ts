@@ -19,8 +19,13 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents() {
-    this.eventService.getEvents().subscribe(data => {
-
+    this.eventService.getEvents().subscribe({
+      next: (data: any) => {
+        this.events = data;
+      },
+      error: (err) => {
+        console.error(err);
+      }
     });
   }
 }

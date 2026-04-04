@@ -61,7 +61,21 @@ export class LoginComponent {
       next: (res) => {
         this.loading = false;
         alert("Login Successful!");
-        this.router.navigate(['/']); // Navigate to home after login
+        
+        const role = this.authService.userRole();
+        const user = this.authService.currentUser();
+        
+        if (role === 'committee') {
+           if (!user.committee_id) {
+             this.router.navigate(['/committee/profile-setup']);
+           } else {
+             this.router.navigate(['/committee/dashboard']);
+           }
+        } else if (role === 'admin') {
+           this.router.navigate(['/admin']);
+        } else {
+           this.router.navigate(['/']);
+        }
       },
       error: (err) => {
         this.loading = false;

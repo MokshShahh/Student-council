@@ -1,12 +1,18 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeComponent } from './home/home.component';
 import { EventsComponent } from './events/events.component';
+import { AdminComponent } from './admin/admin.component';
 import { EventFormComponent } from './event-form/event-form.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: '', component: HomeComponent }, // DEFAULT PAGE ✅
   { path: 'events', component: EventsComponent },
-  { path: 'add-event', component: EventFormComponent },
+  { path: 'admin', component: AdminComponent },
+  { path: 'event-form', component: EventFormComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'dashboard', component: DashboardComponent }
 ];

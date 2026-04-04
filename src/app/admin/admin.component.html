@@ -1,15 +1,15 @@
 <h2>Admin Dashboard</h2>
 
-<div *ngFor="let event of events()">
+<div *ngFor="let event of events">
   <div class="card">
 
     <h4>{{event.name}}</h4>
     <p>{{event.description}}</p>
 
-    <p *ngIf="event.approved" style="color: lightgreen;">Approved</p>
-    <p *ngIf="!event.approved" style="color: orange;">Pending</p>
+    <p *ngIf="event.is_approved" style="color: lightgreen;">Approved</p>
+    <p *ngIf="!event.is_approved" style="color: orange;">Pending</p>
 
-    <button *ngIf="!event.approved" (click)="approve(event)">
+    <button *ngIf="!event.is_approved" (click)="approve(event)">
       Approve
     </button>
 

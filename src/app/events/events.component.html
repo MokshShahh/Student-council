@@ -1,23 +1,36 @@
-
-
 <h2>Upcoming Events</h2>
 
-<div class="container">
-  <!-- Only show approved events to regular users -->
-  <div *ngFor="let event of events()">
-    <div class="event-card" *ngIf="event.is_approved">
-      <h4>{{event.name}}</h4>
-      <p>{{event.description}}</p>
-      <span class="badge">Approved</span>
-    </div>
-  </div>
+<div class="events-grid">
+  <div class="event-card" *ngFor="let event of events">
 
-  <hr>
-  
-  <h3>Submit New Event</h3>
-  <form (submit)="addEvent()">
-    <input type="text" placeholder="Event Title" [(ngModel)]="title" name="title" required>
-    <input type="text" placeholder="Description" [(ngModel)]="description" name="description" required>
-    <button type="submit">Submit for Approval</button>
-  </form>
+    <div class="card-image">
+      <img [src]="event.banner || 'https://via.placeholder.com/400x200'" />
+      <div class="category-badge" *ngIf="event.is_approved">Approved</div>
+    </div>
+
+    <div class="card-content">
+      <h3>{{event.name}}</h3>
+      <p class="description">{{event.description}}</p>
+
+      <div class="event-meta">
+        <div class="meta-item" *ngIf="event.start_time">
+          📅 {{event.start_time | date:'mediumDate'}}
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <a *ngIf="event.registration_link"
+           [href]="event.registration_link"
+           target="_blank"
+           class="btn btn-primary">
+           Register
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="events.length === 0">
+  No events available
 </div>

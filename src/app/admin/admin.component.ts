@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../event.service';
 
@@ -10,7 +10,7 @@ import { EventService } from '../event.service';
 })
 export class AdminComponent implements OnInit {
 
-  events = signal<any[]>([]);
+  events: any[] = [];
 
   constructor(private eventService: EventService) {}
 
@@ -20,16 +20,20 @@ export class AdminComponent implements OnInit {
 
   fetchEvents() {
     this.eventService.getEvents().subscribe({
-      next: (data: any) => this.events.set(data),
+      next: (data: any) => {
+        this.events = data;
+      },
       error: (err) => console.error(err)
     });
   }
 
   approve(event: any) {
-    this.eventService.approveEvent(event.id).subscribe(() => {
-      alert("Approved!");
-      this.fetchEvents();
+    this.eventService.approveEvent(event.id).subscribe({
+      next: () => {
+        alert("Approved!");
+        this.fetchEvents();
+      },
+      error: (err) => console.error(err)
     });
   }
-
 }
