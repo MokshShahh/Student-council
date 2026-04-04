@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { EVENTS, COMMITTEES } from '../data';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,20 +11,22 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
 
-  currentPage = 'dashboard';
+  events = EVENTS;
+  committees = COMMITTEES;
 
-  constructor(private router: Router) {}
+  currentSlide = 0;
+  sidebarOpen = true;
 
-  go(page: string) {
-    this.currentPage = page;
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
-  goToAddEvent() {
-    this.router.navigate(['/add-event']);
+  nextSlide() {
+    this.currentSlide = (this.currentSlide + 1) % this.events.length;
   }
 
-  logout() {
-    sessionStorage.clear();
-    this.router.navigate(['/']);
+  prevSlide() {
+    this.currentSlide =
+      (this.currentSlide - 1 + this.events.length) % this.events.length;
   }
 }

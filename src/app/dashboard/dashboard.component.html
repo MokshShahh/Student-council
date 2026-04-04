@@ -1,116 +1,125 @@
 <div class="shell">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sb-head">
-    <div class="sb-brand">
-      <div class="sb-icon"><i class="fas fa-university"></i></div>
-      <div>
-        <div class="sb-title">Council</div>
-        <div class="sb-role">Admin</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.collapsed]="!sidebarOpen">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <div class="sb-icon"><i class="fas fa-university"></i></div>
+        <div>
+          <div class="sb-title">Council</div>
+          <div class="sb-role">Student</div>
+        </div>
       </div>
+
+      <button class="sb-toggle" (click)="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <nav class="sb-nav">
+      <a class="nav-item active">
+        <i class="fas fa-th-large"></i>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a class="nav-item"><i class="fas fa-newspaper"></i><span class="nav-text">News</span></a>
+      <a class="nav-item"><i class="fas fa-users"></i><span class="nav-text">Committee</span></a>
+      <a class="nav-item"><i class="fas fa-calendar"></i><span class="nav-text">Events</span></a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topnav">
+      <h2>Dashboard</h2>
+    </header>
+
+    <div class="page-area">
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-ico c1"><i class="fas fa-calendar-alt"></i></div>
+          <div><span class="stat-val">{{events.length}}</span><span class="stat-lbl">Open Events</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-ico c2"><i class="fas fa-users"></i></div>
+          <div><span class="stat-val">{{committees.length}}</span><span class="stat-lbl">Committees</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-ico c3"><i class="fas fa-file-alt"></i></div>
+          <div><span class="stat-val">0</span><span class="stat-lbl">Applications</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-ico c4"><i class="fas fa-newspaper"></i></div>
+          <div><span class="stat-val">6</span><span class="stat-lbl">News</span></div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="sec-title">
+        <h3><i class="fas fa-star"></i> Upcoming Events</h3>
+      </div>
+
+      <div class="carousel-box">
+        <div *ngFor="let ev of events; let i = index"
+             class="car-slide"
+             [class.active]="i === currentSlide">
+
+          <div class="car-img" [style.background]="ev.gradient">
+
+            <div class="car-bg-icon">
+              <i class="fas" [ngClass]="ev.icon"></i>
+            </div>
+
+            <div class="car-fg">
+              <span class="car-tag">
+                <i class="fas fa-tag"></i> {{ev.committee}}
+              </span>
+
+              <h3>{{ev.name}}</h3>
+              <p>{{ev.shortDesc}}</p>
+
+              <button class="btn-view">
+                <i class="fas fa-eye"></i> View Details
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="car-arrow left" (click)="prevSlide()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <button class="car-arrow right" (click)="nextSlide()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- COMMITTEES -->
+      <div class="sec-title">
+        <h3><i class="fas fa-users"></i> Our Committees</h3>
+      </div>
+
+      <div class="grid-4">
+        <div class="comm-card" *ngFor="let c of committees">
+          <div class="comm-top" [style.background]="c.gradient">
+            <i class="fas" [ngClass]="c.icon"></i>
+          </div>
+
+          <div class="comm-body">
+            <h4>{{c.name}}</h4>
+            <p>{{c.members}} Members</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <nav class="sb-nav">
-    <span class="sb-label">MENU</span>
-
-    <a class="nav-item" [class.active]="currentPage==='dashboard'" (click)="go('dashboard')">
-      <i class="fas fa-th-large"></i><span class="nav-text">Dashboard</span>
-    </a>
-
-    <a class="nav-item" [class.active]="currentPage==='news'" (click)="go('news')">
-      <i class="fas fa-newspaper"></i><span class="nav-text">News</span>
-    </a>
-
-    <a class="nav-item" [class.active]="currentPage==='committee'" (click)="go('committee')">
-      <i class="fas fa-users"></i><span class="nav-text">Committee</span>
-    </a>
-
-    <a class="nav-item" (click)="goToAddEvent()">
-      <i class="fas fa-calendar-plus"></i><span class="nav-text">Add Event</span>
-    </a>
-
-    <a class="nav-item" [class.active]="currentPage==='status'" (click)="go('status')">
-      <i class="fas fa-chart-bar"></i><span class="nav-text">Status</span>
-    </a>
-  </nav>
-
-  <div class="sb-foot">
-    <div class="sb-user">
-      <div class="sb-avatar">A</div>
-      <div>
-        <div class="user-name">Admin</div>
-        <div class="user-role">Administrator</div>
-      </div>
-    </div>
-
-    <a class="nav-item nav-logout" (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
-    </a>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-
-<header class="topnav">
-  <div class="breadcrumb">
-    <span>Dashboard</span>
-  </div>
-</header>
-
-<div class="page-area">
-
-<!-- DASHBOARD -->
-<div class="page" [class.active]="currentPage==='dashboard'">
-  <div class="pg-head">
-    <h2>Dashboard</h2>
-    <p>Welcome back, Admin!</p>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat-card"><i class="fas fa-calendar-alt"></i><span>Total Events</span></div>
-    <div class="stat-card"><i class="fas fa-users"></i><span>Committees</span></div>
-    <div class="stat-card"><i class="fas fa-file-alt"></i><span>Applications</span></div>
-    <div class="stat-card"><i class="fas fa-newspaper"></i><span>News</span></div>
-  </div>
-</div>
-
-<!-- NEWS -->
-<div class="page" [class.active]="currentPage==='news'">
-  <div class="pg-head">
-    <h2>News</h2>
-  </div>
-
-  <div class="grid-3">
-    <div class="card">News Item</div>
-  </div>
-</div>
-
-<!-- COMMITTEE -->
-<div class="page" [class.active]="currentPage==='committee'">
-  <div class="pg-head">
-    <h2>Committee</h2>
-  </div>
-
-  <div class="grid-4">
-    <div class="card">Committee Card</div>
-  </div>
-</div>
-
-<!-- STATUS -->
-<div class="page" [class.active]="currentPage==='status'">
-  <div class="pg-head">
-    <h2>Status</h2>
-  </div>
-
-  <table>
-    <tr><th>Name</th><th>Status</th></tr>
-    <tr><td>Student</td><td>Pending</td></tr>
-  </table>
-</div>
-
-</div>
-</div>
 </div>

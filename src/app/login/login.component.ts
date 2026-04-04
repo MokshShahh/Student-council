@@ -1,86 +1,18 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-imports: [FormsModule, CommonModule, RouterLink],
-  templateUrl: './login.component.html'
-  
+  imports: [FormsModule, CommonModule],
+  template: `
+    <div class="auth-box">
+      <h2>Login</h2>
+      <input placeholder="Email">
+      <input placeholder="Password" type="password">
+      <button>Login</button>
+    </div>
+  `
 })
-export class LoginComponent {
-
-  email = '';
-  password = '';
-
-  emailError = '';
-  passwordError = '';
-  loginError = '';
-  loading = false;
-
-  constructor(private authService: AuthService, private router: Router) {}
-
-  validate() {
-    let valid = true;
-
-    this.emailError = '';
-    this.passwordError = '';
-    this.loginError = '';
-
-    // Email validation
-    if (this.email === '') {
-      this.emailError = 'Email is required';
-      valid = false;
-    } else if (!this.email.includes('@')) {
-      this.emailError = 'Enter a valid email';
-      valid = false;
-    }
-
-    // Password validation
-    if (this.password === '') {
-      this.passwordError = 'Password is required';
-      valid = false;
-    } else if (this.password.length < 8) {
-      this.passwordError = 'Minimum 8 characters required';
-      valid = false;
-    }
-
-    return valid;
-  }
-
-  login() {
-    if (!this.validate()) return;
-
-  if (!this.validate()) return;
-
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        this.loading = false;
-        alert("Login Successful!");
-        
-        const role = this.authService.userRole();
-        const user = this.authService.currentUser();
-        
-        if (role === 'committee') {
-           if (!user.committee_id) {
-             this.router.navigate(['/committee/profile-setup']);
-           } else {
-             this.router.navigate(['/committee/dashboard']);
-           }
-        } else if (role === 'admin') {
-           this.router.navigate(['/admin']);
-        } else {
-           this.router.navigate(['/']);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.loginError = 'Invalid email or password';
-      }
-    });
-  }
-}
+export class LoginComponent {}

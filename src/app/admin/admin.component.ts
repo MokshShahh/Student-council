@@ -15,25 +15,18 @@ export class AdminComponent implements OnInit {
   constructor(private eventService: EventService) {}
 
   ngOnInit() {
-    this.fetchEvents();
+    this.load();
   }
 
-  fetchEvents() {
-    this.eventService.getEvents().subscribe({
-      next: (data: any) => {
-        this.events = data;
-      },
-      error: (err) => console.error(err)
+  load() {
+    this.eventService.getEvents().subscribe(data => {
+      this.events = data;
     });
   }
 
   approve(event: any) {
-    this.eventService.approveEvent(event.id).subscribe({
-      next: () => {
-        alert("Approved!");
-        this.fetchEvents();
-      },
-      error: (err) => console.error(err)
+    this.eventService.approveEvent(event.id).subscribe(() => {
+      this.load();
     });
   }
 }
