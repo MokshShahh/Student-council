@@ -1,0 +1,26 @@
+<div class="page-area">
+
+  <h2 class="page-title">News & Announcements</h2>
+
+  <div class="grid-4">
+
+    <div class="news-card" *ngFor="let n of newsList">
+
+      <div class="news-tag" [ngClass]="n.category.toLowerCase()">
+        {{n.category}}
+      </div>
+
+      <h3>{{n.title}}</h3>
+
+      <p>{{n.desc}}</p>
+
+      <div class="news-footer">
+        <span><i class="fas fa-clock"></i> {{n.date}}</span>
+        <span><i class="fas fa-user"></i> Admin</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

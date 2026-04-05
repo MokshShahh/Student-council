@@ -1,38 +1,94 @@
-.role-select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  background: white;
-  color: #333;
-  outline: none;
-  font-family: inherit;
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #020617;
+  color: white;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-}
-
-.auth-box {
-  width: 350px;
-  margin: auto;
-  margin-top: 80px;
+.login-card {
+  background: #0f172a;
   padding: 30px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  width: 350px;
   text-align: center;
 }
 
-.error {
-  color: #f87171;
-  font-size: 12px;
-  margin-top: 5px;
+.logo .icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.toggle {
+  display: flex;
+  margin: 20px 0;
+}
+
+.toggle button {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #334155;
+  color: white;
+  cursor: pointer;
+}
+
+.toggle .active {
+  background: #2563eb;
+}
+
+.input-group {
   text-align: left;
+  margin: 10px 0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: white;
+}
+
+.password-box {
+  display: flex;
+  align-items: center;
+}
+
+.password-box i {
+  margin-left: -30px;
+  cursor: pointer;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  border: none;
+  color: white;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.success {
+  color: lightgreen;
+  margin-top: 10px;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.hint a {
+  color: #00c6ff;
 }

@@ -1,44 +1,113 @@
-<h2>Admin Dashboard</h2>
+<div class="shell">
 
-<div class="admin-container">
-  
-  <div *ngIf="errorMessage()" class="error-banner" style="color: red; background: #fee; padding: 10px; border: 1px solid red;">
-    {{ errorMessage() }}
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <div class="sb-icon"><i class="fas fa-university"></i></div>
+        <div>
+          <div class="sb-title">Council</div>
+          <div class="sb-role">Admin</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <a routerLink="/admin" class="nav-item">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a routerLink="/news" class="nav-item">
+        <i class="fas fa-newspaper"></i>
+        <span>News</span>
+      </a>
+
+      <a routerLink="/committee" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Committee</span>
+      </a>
+
+      <a routerLink="/event-form" class="nav-item">
+        <i class="fas fa-calendar-plus"></i>
+        <span>Add Event</span>
+      </a>
+
+      <a routerLink="/status" class="nav-item active">
+        <i class="fas fa-list"></i>
+        <span>Status</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topnav">
+      <h2>Application Status</h2>
+    </header>
+
+    <div class="page-area">
+
+      <!-- FILTER BUTTONS -->
+      <div class="status-filters">
+        <button class="active">Accepted ({{getCount('Accepted')}})</button>
+        <button>Rejected ({{getCount('Rejected')}})</button>
+        <button>Pending ({{getCount('Pending')}})</button>
+      </div>
+
+      <!-- TABLE -->
+      <table class="admin-table">
+
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Committee</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+
+        <tr *ngFor="let app of applications; let i = index">
+
+          <td>{{i+1}}</td>
+
+          <td>
+            <div class="user-cell">
+              <div class="avatar">{{app.name[0]}}</div>
+              {{app.name}}
+            </div>
+          </td>
+
+          <td>{{app.email}}</td>
+
+          <td>
+            <span class="tag">{{app.committee}}</span>
+          </td>
+
+          <td>
+            <span class="status" [ngClass]="app.status.toLowerCase()">
+              {{app.status}}
+            </span>
+          </td>
+
+          <td>
+            <button class="approve" (click)="approve(i)">
+              ✔ Approve
+            </button>
+
+            <button class="reject" (click)="reject(i)">
+              ✖ Reject
+            </button>
+          </td>
+
+        </tr>
+
+      </table>
+
+    </div>
+
   </div>
 
-  <section>
-    <h3>Pending Events</h3>
-    <p *ngIf="pendingEvents().length === 0 && !errorMessage()">No pending events found.</p>
-
-    <div *ngFor="let event of pendingEvents()">
-      <div class="card" style="opacity: 0.7; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
-        <h4>{{event.name}}</h4>
-        <p>{{event.description}}</p>
-                <button (click)="approve(event)">Approve</button>
-
-      </div>
-    </div>
-  </section>
-
-  <hr>
-
-  <section>
-    <h3>Approved Events</h3>
-    <p *ngIf="approvedEvents().length === 0 && !errorMessage()">No approved events found.</p>
-
-    <div *ngFor="let event of approvedEvents()">
-      <div class="card" style="opacity: 0.7; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
-        <h4>{{event.name}}</h4>
-        <p>{{event.description}}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- DEBUG DATA -->
-  <hr>
-  <details>
-    <summary>Debug: Data View (Total: {{events().length}})</summary>
-    <p>Raw JSON:</p>
-    <pre>{{ events() | json }}</pre>
-  </details>
 </div>

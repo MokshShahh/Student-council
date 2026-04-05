@@ -1,0 +1,121 @@
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table th, .admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.approve {
+  background: green;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.reject {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pending {
+  color: orange;
+}
+
+.approved {
+  color: lightgreen;
+}
+
+.rejected {
+  color: red;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #0f172a;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  background: #2563eb;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag {
+  background: #1e40af;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.status.accepted {
+  color: #22c55e;
+}
+
+.status.rejected {
+  color: #ef4444;
+}
+
+.status.pending {
+  color: #facc15;
+}
+
+button.approve {
+  background: #22c55e;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+button.reject {
+  background: #ef4444;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.status-filters button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border: none;
+  background: #1e293b;
+  color: white;
+  border-radius: 8px;
+}
+
+.status-filters .active {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+}

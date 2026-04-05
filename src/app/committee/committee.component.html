@@ -1,0 +1,51 @@
+<div class="page-area">
+
+  <h2 class="page-title">Apply to a Committee</h2>
+  <p class="page-sub">Select a committee and apply</p>
+
+  <div class="grid-4">
+
+    <div class="comm-card"
+         *ngFor="let c of committees"
+         (click)="openCommittee(c)">
+
+      <div class="comm-top" [style.background]="c.gradient">
+        <i class="fas" [ngClass]="c.icon"></i>
+      </div>
+
+      <div class="comm-body">
+        <h4>{{c.name}}</h4>
+        <p>{{c.members}} Members</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" *ngIf="selectedCommittee">
+    <div class="modal-box">
+
+      <button class="close-btn" (click)="closeCommittee()">×</button>
+
+      <div class="modal-header" [style.background]="selectedCommittee.gradient">
+        <i class="fas" [ngClass]="selectedCommittee.icon"></i>
+        <h3>{{selectedCommittee.name}}</h3>
+      </div>
+
+      <div class="modal-body">
+        <p>{{selectedCommittee.desc}}</p>
+
+        <div class="info-row">
+          <span><i class="fas fa-users"></i> {{selectedCommittee.members}} Members</span>
+        </div>
+
+        <button class="apply-btn" (click)="apply()">
+          <i class="fas fa-paper-plane"></i> Apply Now
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

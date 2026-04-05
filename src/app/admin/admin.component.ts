@@ -1,58 +1,65 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventService } from '../event.service';
+import { ApplicationService } from '../application.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './admin.component.html'
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  events = signal<any[]>([]);
-  errorMessage = signal<string | null>(null);
+
+ applications = [
+  {
+    name: 'Arjun Patel',
+    email: 'arjun@student.com',
+    committee: 'Cult Com',
+    status: 'Accepted'
+  },
+  {
+    name: 'Karan Singh',
+    email: 'karan@student.com',
+    committee: 'Sports Committee',
+    status: 'Rejected'
+  },
+  {
+    name: 'Riya Sharma',
+    email: 'riya@student.com',
+    committee: 'Tech',
+    status: 'Pending'
+  }
+];
   
-  // Computed property to filter pending events
-  pendingEvents = computed(() => 
-    this.events().filter(event => !event.is_approved)
-  );
 
-  // Computed property to filter approved events
-  approvedEvents = computed(() => 
-    this.events().filter(event => event.is_approved)
-  );
+  constructor(private appService: ApplicationService) {}
+currentUser: any;
 
-  constructor(private eventService: EventService) {}
+ngOnInit() {
+  this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+}
 
-  ngOnInit() {
-    this.fetchEvents();
+getCount(status: string) {
+  return this.applications.filter(a => a.status === status).length;
+}
+
+  loadApplications() {
+    this.applications = this.appService.getApplications();
   }
 
-  fetchEvents() {
-    this.eventService.getAdminEvents().subscribe({
-      next: (data) => {
-        console.log('Admin Dashboard: Fetched Events:', data);
-        this.events.set(data);
-        this.errorMessage.set(null);
-      },
-      error: (err) => {
-        console.error('Admin Dashboard: Error fetching events:', err);
-        this.errorMessage.set(`Failed to load events: ${err.message}`);
-      }
-    });
+  approve(i: number) {
+    this.applications[i].status = 'Approved';
+    this.save();
   }
 
-  approve(event: any) {
-    if (!event.id) return;
-    this.eventService.approveEvent(event.id).subscribe({
-      next: () => {
-        alert('Event approved!');
-        this.fetchEvents();
-      },
-      error: (err) => {
-        alert('Error approving event. Are you an admin?');
-        console.error(err);
-      }
-    });
+  reject(i: number) {
+    this.applications[i].status = 'Rejected';
+    this.save();
+  }
+
+  save() {
+    localStorage.setItem('applications', JSON.stringify(this.applications));
+    this.loadApplications();
   }
 }

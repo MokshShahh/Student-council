@@ -1,30 +1,27 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventService } from '../event.service';
-import { RouterLink } from '@angular/router';
+import { EVENTS } from '../data';
 
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
-  templateUrl: './events.component.html',
-  styleUrl: './events.component.css'
+  imports: [CommonModule],
+  templateUrl: './events.component.html'
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent {
 
-  events = signal<any[]>([]);
+  events = EVENTS;
+  selectedEvent: any = null;
 
-  constructor(private eventService: EventService) {}
-
-  ngOnInit() {
-    this.fetchEvents();
+  openEvent(event: any) {
+    this.selectedEvent = event;
   }
 
-  fetchEvents() {
-    this.eventService.getEvents().subscribe({
-      next: (data) => this.events.set(data),
-      error: (err) => console.error('Error fetching events:', err)
-    });
+  closeEvent() {
+    this.selectedEvent = null;
+  }
+
+  register() {
+    alert("Registered successfully!");
   }
 }

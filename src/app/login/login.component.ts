@@ -1,84 +1,58 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './login.component.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
+  role: 'admin' | 'student' = 'admin';
+
   email = '';
   password = '';
+  error = '';
+  showPassword = false;
 
-  emailError = '';
-  passwordError = '';
-  loginError = '';
-  loading = false;
+  constructor(private router: Router) {}
 
-  constructor(private authService: AuthService, private router: Router) {}
+  setRole(r: 'admin' | 'student') {
+    this.role = r;
+    this.error = '';
+  }
 
-  validate() {
-    let valid = true;
-
-    this.emailError = '';
-    this.passwordError = '';
-    this.loginError = '';
-
-    // Email validation
-    if (this.email === '') {
-      this.emailError = 'Email is required';
-      valid = false;
-    } else if (!this.email.includes('@')) {
-      this.emailError = 'Enter a valid email';
-      valid = false;
-    }
-
-    // Password validation
-    if (this.password === '') {
-      this.passwordError = 'Password is required';
-      valid = false;
-    } else if (this.password.length < 8) {
-      this.passwordError = 'Minimum 8 characters required';
-      valid = false;
-    }
-
-    return valid;
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   login() {
-    if (!this.validate()) return;
 
-    this.loading = true;
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (res) => {
-        this.loading = false;
-        alert("Login Successful!");
-        
-        const role = this.authService.userRole();
-        const user = this.authService.currentUser();
-        
-        if (role === 'committee') {
-           if (!user.committee_id) {
-             this.router.navigate(['/committee/profile-setup']);
-           } else {
-             this.router.navigate(['/committee/dashboard']);
-           }
-        } else if (role === 'admin') {
-           this.router.navigate(['/admin']);
-        } else {
-           this.router.navigate(['/']);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.loginError = 'Invalid email or password';
-      }
-    });
+    const user = users.find((u: any) =>
+      u.email === this.email &&
+      u.password === this.password &&
+      u.role === this.role
+    );
+
+    if (!user) {
+      this.error = 'Invalid credentials';
+      return;
+    }
+
+    // ✅ SAVE LOGGED USER
+    localStorage.setItem('currentUser', JSON.stringify(user));
+
+    // ✅ REDIRECT BASED ON ROLE
+    if (user.role === 'admin') {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 }

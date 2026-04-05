@@ -1,0 +1,27 @@
+<div class="page-area">
+
+  <h2>My Application Status</h2>
+
+  <div *ngIf="applications.length === 0">
+    <p>No applications yet.</p>
+  </div>
+
+  <table *ngIf="applications.length > 0" class="status-table">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Committee</th>
+      <th>Status</th>
+    </tr>
+
+    <tr *ngFor="let app of applications">
+      <td>{{app.name}}</td>
+      <td>{{app.email}}</td>
+      <td>{{app.committee}}</td>
+      <td [ngClass]="app.status.toLowerCase()">
+        {{app.status}}
+      </td>
+    </tr>
+  </table>
+
+</div>
