@@ -62,7 +62,11 @@ export class RegisterComponent {
     this.error = '';
 
     setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 1500);
+  if (this.role === 'admin') {
+    this.router.navigate(['/admin']);
+  } else {
+    this.router.navigate(['/dashboard']);
+  }
+}, 1000);
   }
 }

@@ -16,8 +16,8 @@ export class LoginComponent {
 
   email = '';
   password = '';
-  showPassword = false;
   error = '';
+  showPassword = false;
 
   constructor(private router: Router) {}
 
@@ -32,13 +32,12 @@ export class LoginComponent {
 
   login() {
 
-    const users = [
-      { email: 'admin@council.com', password: 'admin123', role: 'admin' },
-      { email: 'student@council.com', password: 'student123', role: 'student' }
-    ];
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-    const user = users.find(
-      u => u.email === this.email && u.password === this.password
+    const user = users.find((u: any) =>
+      u.email === this.email &&
+      u.password === this.password &&
+      u.role === this.role
     );
 
     if (!user) {
@@ -46,15 +45,10 @@ export class LoginComponent {
       return;
     }
 
-    if (user.role !== this.role) {
-      this.error = `Login as ${this.role}`;
-      return;
-    }
+    // ✅ SAVE LOGGED USER
+    localStorage.setItem('currentUser', JSON.stringify(user));
 
-    // Save user
-    sessionStorage.setItem('user', JSON.stringify(user));
-
-    // Redirect
+    // ✅ REDIRECT BASED ON ROLE
     if (user.role === 'admin') {
       this.router.navigate(['/admin']);
     } else {

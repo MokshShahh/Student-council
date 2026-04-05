@@ -17,6 +17,11 @@ export class DashboardComponent {
 
   currentSlide = 0;
   sidebarOpen = true;
+  currentUser: any;
+
+ngOnInit() {
+  this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+}
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;

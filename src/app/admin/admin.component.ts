@@ -14,10 +14,11 @@ export class AdminComponent implements OnInit {
   applications: any[] = [];
 
   constructor(private appService: ApplicationService) {}
+currentUser: any;
 
-  ngOnInit() {
-    this.loadApplications();
-  }
+ngOnInit() {
+  this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+}
 
   loadApplications() {
     this.applications = this.appService.getApplications();
