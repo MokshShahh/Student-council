@@ -15,7 +15,7 @@ export class CommitteeService {
   }
 
   getCommitteePublic(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/committee/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/committees/${id}/public`);
   }
 
   getMyProfile(): Observable<any> {

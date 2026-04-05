@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { CommitteeService } from '../committee.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -12,14 +14,15 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private committeeService = inject(CommitteeService);
 
   role: 'admin' | 'student' | 'committee' = 'admin';
   email = '';
   password = '';
   error = '';
   showPassword = false;
-
-  constructor(private auth: AuthService, private router: Router) {}
 
   setRole(r: 'admin' | 'student' | 'committee') {
     this.role = r;
@@ -37,17 +40,25 @@ export class LoginComponent {
     }
 
     this.auth.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
-        if (this.auth.isAdmin()) {
+      next: (res) => {
+        const decoded: any = jwtDecode(res.access_token);
+        const userRole = decoded.role?.toLowerCase();
+
+        if (userRole === 'admin') {
           this.router.navigate(['/admin']);
-        } else if (this.auth.isCommittee()) {
-          const user = this.auth.currentUser();
-          if (user && !user.committee_id) {
-            // Redirect to profile setup if not yet completed
-            this.router.navigate(['/committee/profile-setup']);
-          } else {
-            this.router.navigate(['/committee/dashboard']);
-          }
+        } else if (userRole === 'committee') {
+          this.committeeService.getMyProfile().subscribe({
+            next: (profile) => {
+              if (!profile || !profile.description) {
+                this.router.navigate(['/committee/profile-setup']);
+              } else {
+                this.router.navigate(['/committee/dashboard']);
+              }
+            },
+            error: () => {
+              this.router.navigate(['/committee/profile-setup']);
+            }
+          });
         } else {
           this.router.navigate(['/dashboard']);
         }

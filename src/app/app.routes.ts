@@ -12,11 +12,16 @@ import { NewsComponent } from './news/news.component';
 import { adminGuard, committeeGuard } from './auth.guard';
 import { CommitteeDashboardComponent } from './committee/dashboard.component';
 import { CommitteeProfileSetupComponent } from './committee/profile-setup.component';
+import { PublicProfileComponent } from './committee/public-profile.component';
 
 export const routes: Routes = [
 
   // DEFAULT HOME
   { path: '', component: HomeComponent },
+
+  // AUTH
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 
   // MAIN ROUTES
   { path: 'dashboard', component: DashboardComponent },
@@ -24,15 +29,15 @@ export const routes: Routes = [
 
   { path: 'events', component: EventsComponent },
   { path: 'event-form', component: EventFormComponent, canActivate: [committeeGuard] },
-  { path: 'committee', component: CommitteeComponent },
+  
+  // COMMITTEE ROUTES (Specific routes MUST come before parameterized ones)
   { path: 'committee/dashboard', component: CommitteeDashboardComponent, canActivate: [committeeGuard] },
   { path: 'committee/profile-setup', component: CommitteeProfileSetupComponent, canActivate: [committeeGuard] },
+  { path: 'committee', component: CommitteeComponent },
+  { path: 'committee/:id', component: PublicProfileComponent },
+  
   { path: 'status', component: StatusComponent },
   { path: 'news', component: NewsComponent },
-
-  // AUTH
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
 
   // 🔥 ADD THIS (VERY IMPORTANT)
   { path: '**', redirectTo: '' }  // fallback route

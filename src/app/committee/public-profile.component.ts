@@ -1,69 +1,60 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommitteeService } from '../committee.service';
+import { SafePipe } from '../safe.pipe';
+import { ApplicationService } from '../application.service';
 
 @Component({
   selector: 'app-public-profile',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="profile-container" *ngIf="data">
-      <div class="header">
-        <img [src]="data.committee.logo_url" *ngIf="data.committee.logo_url" class="logo">
-        <div class="info">
-          <h1>{{ data.committee.name }}</h1>
-          <p class="tagline">{{ data.committee.description }}</p>
-          <p class="contact" *ngIf="data.committee.contact_info">Contact: {{ data.committee.contact_info }}</p>
-        </div>
-      </div>
-
-      <div class="about">
-        <h3>About Us</h3>
-        <p>{{ data.committee.long_description }}</p>
-      </div>
-
-      <hr>
-
-      <h3>Events by {{ data.committee.name }}</h3>
-      <div class="events-grid">
-        <div class="event-card" *ngFor="let event of data.events">
-          <img [src]="event.banner || 'https://via.placeholder.com/300x150'" class="banner">
-          <div class="event-info">
-            <h4>{{ event.name }}</h4>
-            <p>{{ event.description }}</p>
-            <a [href]="event.registration_link" target="_blank" class="register-btn" *ngIf="event.registration_link">Register</a>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="data.events.length === 0">No upcoming events.</div>
-    </div>
-  `,
-  styles: [`
-    .profile-container { max-width: 900px; margin: 40px auto; padding: 20px; }
-    .header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-    .logo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #007bff; }
-    .tagline { font-style: italic; color: #666; }
-    .about { margin-bottom: 40px; line-height: 1.6; }
-    .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .event-card { border: 1px solid #eee; border-radius: 12px; overflow: hidden; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .event-card:hover { transform: translateY(-5px); }
-    .banner { width: 100%; height: 150px; object-fit: cover; }
-    .event-info { padding: 15px; }
-    .register-btn { display: inline-block; padding: 8px 16px; background: #007bff; color: white; border-radius: 6px; text-decoration: none; margin-top: 10px; }
-  `]
+  imports: [CommonModule, SafePipe, RouterModule],
+  templateUrl: './public-profile.component.html'
 })
-export class CommitteePublicProfileComponent implements OnInit {
-  data: any = null;
+export class PublicProfileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private committeeService = inject(CommitteeService);
+  private appService = inject(ApplicationService);
 
-  constructor(private committeeService: CommitteeService, private route: ActivatedRoute) {}
+  committee: any = null;
+  events: any[] = [];
+  news: any[] = [];
+  loading = true;
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.committeeService.getCommitteePublic(+id).subscribe({
-        next: (res) => this.data = res
-      });
+    const idStr = this.route.snapshot.paramMap.get('id');
+    if (idStr && idStr !== 'NaN') {
+      const id = +idStr;
+      if (!isNaN(id)) {
+        this.loadData(id);
+      } else {
+        this.loading = false;
+      }
+    } else {
+      this.loading = false;
     }
+  }
+
+  loadData(id: number) {
+    this.committeeService.getCommitteePublic(id).subscribe({
+      next: (res) => {
+        this.committee = res.committee;
+        this.events = res.events;
+        this.news = res.news;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading committee:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  apply() {
+    if (!this.committee) return;
+    this.appService.apply(this.committee.id).subscribe({
+      next: () => alert('Application submitted!'),
+      error: (err) => alert('Error: ' + (err.error?.detail || 'Could not apply'))
+    });
   }
 }

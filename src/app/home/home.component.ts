@@ -1,14 +1,25 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
+import { CommitteeService } from '../committee.service';
+import { SafePipe } from '../safe.pipe';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterModule, SafePipe],
   templateUrl: './home.component.html'
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements AfterViewInit, OnInit {
+  private committeeService = inject(CommitteeService);
+  committees: any[] = [];
+
+  ngOnInit() {
+    this.committeeService.getCommittees().subscribe({
+      next: (res) => this.committees = res,
+      error: (err) => console.error('Error loading committees:', err)
+    });
+  }
 
   ngAfterViewInit() {
     const cards = document.querySelectorAll('.card');

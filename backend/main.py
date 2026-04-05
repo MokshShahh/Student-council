@@ -122,6 +122,8 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 @app.on_event("startup")
 def on_startup():
+    # Force schema recreation to add new columns (remove this line after one successful run)
+    # SQLModel.metadata.drop_all(engine)
     create_db_and_tables()
 
 @app.get("/")
@@ -431,6 +433,9 @@ async def setup_committee_profile(
     description: Optional[str] = Form(None),
     long_description: Optional[str] = Form(None),
     contact_info: Optional[str] = Form(None),
+    instagram: Optional[str] = Form(None),
+    linkedin: Optional[str] = Form(None),
+    twitter: Optional[str] = Form(None),
     logo: UploadFile = File(None)
 ):
     if current_user.role != UserRole.COMMITTEE:
@@ -452,6 +457,9 @@ async def setup_committee_profile(
         if logo_url:
             db_committee.logo_url = logo_url
         db_committee.contact_info = contact_info
+        db_committee.instagram = instagram
+        db_committee.linkedin = linkedin
+        db_committee.twitter = twitter
         session.add(db_committee)
     else:
         new_committee = Committee(
@@ -459,7 +467,10 @@ async def setup_committee_profile(
             description=description,
             long_description=long_description,
             logo_url=logo_url,
-            contact_info=contact_info
+            contact_info=contact_info,
+            instagram=instagram,
+            linkedin=linkedin,
+            twitter=twitter
         )
         session.add(new_committee)
         session.commit()
@@ -469,6 +480,29 @@ async def setup_committee_profile(
         
     session.commit()
     return {"message": "Profile updated successfully"}
+
+@app.get("/api/committees/{committee_id}/public")
+async def get_public_committee_detail(
+    committee_id: int,
+    session: Annotated[Session, Depends(get_session)]
+):
+    committee = session.get(Committee, committee_id)
+    if not committee:
+        raise HTTPException(status_code=404, detail="Committee not found")
+    
+    # Get approved events
+    stmt_events = select(Events).where(Events.committee_id == committee_id, Events.is_approved == True)
+    events = session.exec(stmt_events).all()
+    
+    # Get news
+    stmt_news = select(News).where(News.committee_id == committee_id).order_by(News.created_at.desc())
+    news = session.exec(stmt_news).all()
+    
+    return {
+        "committee": committee,
+        "events": events,
+        "news": news
+    }
 
 @app.get("/api/committee/dashboard/events")
 async def get_committee_events(

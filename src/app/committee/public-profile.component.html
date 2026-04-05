@@ -1,0 +1,92 @@
+<div class="page-area" *ngIf="committee">
+  <div class="pg-head">
+    <div style="display: flex; align-items: center; gap: 2rem;">
+      <div class="comm-logo-big" 
+           [style.background]="committee.logo_url ? ('url(' + committee.logo_url + ') center/cover' | safe:'style') : 'var(--bg-elevated)'"
+           style="width: 120px; height: 120px; border: 2px solid var(--accent-neon); border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+        <i *ngIf="!committee.logo_url" class="fas fa-users" style="font-size: 3.5rem; color: var(--accent-neon);"></i>
+      </div>
+      <div>
+        <h2 style="font-size: 3rem; margin-bottom: 0.5rem;">{{ committee.name }}</h2>
+        <p style="font-size: 1.1rem; color: var(--accent-cool);">{{ committee.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; margin-top: 40px;">
+    <div>
+      <div class="sec-title">
+        <h3><i class="fas fa-info-circle"></i> About Us</h3>
+      </div>
+      <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-base); white-space: pre-wrap;">
+        {{ committee.long_description || 'No detailed description provided yet. This committee is dedicated to enhancing student life at MPSTME.' }}
+      </p>
+
+      <div class="sec-title" style="margin-top: 60px;">
+        <h3><i class="fas fa-calendar-star"></i> Upcoming Events</h3>
+      </div>
+      <div class="ev-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="ev-card" *ngFor="let e of events">
+          <div class="ev-top" [style.background-image]="'url(' + (e.banner || 'https://via.placeholder.com/400x150') + ')' | safe:'style'" style="background-size: cover; height: 120px;"></div>
+          <div class="ev-body">
+            <h4 style="font-size: 1.1rem;">{{ e.name }}</h4>
+            <p style="font-size: 0.8rem; margin-bottom: 1rem;">{{ e.description }}</p>
+            <div class="ev-meta">
+              <span><i class="fas fa-calendar"></i> {{ e.start_time | date:'short' }}</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="events.length === 0" class="empty-st" style="grid-column: span 2; padding: 2rem;">
+          <p>No upcoming events.</p>
+        </div>
+      </div>
+
+      <div class="sec-title" style="margin-top: 60px;">
+        <h3><i class="fas fa-newspaper"></i> Latest Updates</h3>
+      </div>
+      <div class="grid-3" style="grid-template-columns: 1fr;">
+        <div class="news-card" *ngFor="let item of news" style="padding: 1.5rem;">
+          <h4 style="font-size: 1.2rem;">{{ item.title }}</h4>
+          <p style="font-size: 0.9rem;">{{ item.content }}</p>
+          <div class="news-foot">
+            <span>{{ item.created_at | date:'mediumDate' }}</span>
+          </div>
+        </div>
+        <div *ngIf="news.length === 0" class="empty-st" style="padding: 2rem;">
+          <p>No recent news.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="form-card" style="position: sticky; top: 120px; border-top: 4px solid var(--accent-neon);">
+        <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem;">Join {{ committee.name }}</h3>
+        <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 2rem;">Interested in becoming a part of our team? Submit your application today!</p>
+        <button class="btn-pri fw" (click)="apply()">Apply to Committee</button>
+
+        <div class="sec-title" style="margin-top: 40px;">
+          <h3 style="font-size: 1rem;">Connect With Us</h3>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <a *ngIf="committee.instagram" [href]="committee.instagram" target="_blank" class="btn-out fw" style="justify-content: flex-start;">
+            <i class="fab fa-instagram"></i> Instagram
+          </a>
+          <a *ngIf="committee.linkedin" [href]="committee.linkedin" target="_blank" class="btn-out fw" style="justify-content: flex-start;">
+            <i class="fab fa-linkedin"></i> LinkedIn
+          </a>
+          <a *ngIf="committee.twitter" [href]="committee.twitter" target="_blank" class="btn-out fw" style="justify-content: flex-start;">
+            <i class="fab fa-x-twitter"></i> Twitter
+          </a>
+          <div *ngIf="committee.contact_info" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+            <i class="fas fa-envelope"></i> {{ committee.contact_info }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-area" *ngIf="loading" style="text-align: center; padding: 10rem;">
+  <div class="loader"></div>
+  <p style="margin-top: 2rem; font-family: var(--font-head);">ACCESSING COMMITTEE DATA...</p>
+</div>

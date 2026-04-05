@@ -31,7 +31,7 @@
   </div>
 
   <div class="grid-4">
-    <div class="comm-card" *ngFor="let c of committees" routerLink="/committee">
+    <div class="comm-card" *ngFor="let c of committees" [routerLink]="['/committee', c.id]">
       <div class="comm-top" 
            [style.background]="c.logo_url ? ('url(' + c.logo_url + ') center/cover' | safe:'style') : (c.gradient || 'linear-gradient(135deg,#667eea,#764ba2)')" 
            style="height: 80px; display: flex; align-items: center; justify-content: center;">

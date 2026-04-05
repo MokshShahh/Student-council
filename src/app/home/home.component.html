@@ -1,39 +1,28 @@
-<div class="hero">
-  <div>
-    <h1>MPSTME Student Council</h1>
-    <p>Lead. Innovate. Inspire.</p>
-
-    <button routerLink="/events">Explore Events</button>
-    <button routerLink="/login">Join Now</button>
-  </div>
-</div>
-
-<div class="section">
-  <h2>About MPSTME</h2>
-  <p>
-    MPSTME NMIMS is a leading institute fostering innovation, leadership,
-    and excellence through student-driven initiatives.
-  </p>
-</div>
-
-<div class="grid">
-  <div class="card">
-    <h3>Cultural Committee</h3>
-    <p>Organizing festivals, performances, and college events.</p>
+<div class="page-area">
+  <div class="hero">
+    <h1>MPSTME Council</h1>
+    <p>Lead. Create. Inspire</p>
+    <div style="display: flex; gap: 20px;">
+      <button class="btn-pri fw" routerLink="/events" style="width: auto; padding: 1rem 2.5rem;">Explore Events</button>
+      <button class="btn-out fw" routerLink="/register" style="width: auto; padding: 1rem 2.5rem;">Join the Council</button>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Technical Committee</h3>
-    <p>Hackathons, coding competitions, and tech innovation.</p>
+  <div class="sec-title" style="margin-top: 100px;">
+    <h3><i class="fas fa-users"></i> Student Committees</h3>
   </div>
 
-  <div class="card">
-    <h3>Sports Committee</h3>
-    <p>Managing sports events and competitions.</p>
-  </div>
-
-  <div class="card">
-    <h3>Media & PR</h3>
-    <p>Handling promotions, branding, and outreach.</p>
+  <div class="grid-4">
+    <div class="comm-card" *ngFor="let c of committees" [routerLink]="['/committee', c.id]">
+      <div class="comm-top" 
+           [style.background]="c.logo_url ? ('url(' + c.logo_url + ') center/cover' | safe:'style') : (c.gradient || 'linear-gradient(135deg,#667eea,#764ba2)')" 
+           style="height: 120px; display: flex; align-items: center; justify-content: center;">
+        <i *ngIf="!c.logo_url" class="fas fa-users" style="font-size: 3rem; color: var(--accent-neon);"></i>
+      </div>
+      <div class="comm-body">
+        <h4>{{ c.name }}</h4>
+        <p>{{ c.description || 'Dedicated to student growth and campus excellence.' }}</p>
+      </div>
+    </div>
   </div>
 </div>

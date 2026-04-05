@@ -61,10 +61,12 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.userRole()?.toLowerCase() === 'admin';
+    const role = this.userRole()?.toLowerCase();
+    return role === 'admin';
   }
 
   isCommittee(): boolean {
-    return this.userRole()?.toLowerCase() === 'committee';
+    const role = this.userRole()?.toLowerCase();
+    return role === 'committee';
   }
 }

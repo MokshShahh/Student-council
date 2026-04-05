@@ -15,6 +15,9 @@ class Committee(SQLModel, table=True):
     long_description: str | None = None
     logo_url: str | None = None
     contact_info: str | None = None
+    instagram: str | None = None
+    linkedin: str | None = None
+    twitter: str | None = None
 
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -44,10 +47,15 @@ class News(SQLModel, table=True):
     content: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class EventRegistration(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int | None = Field(default=None, foreign_key="user.id")
+    event_id: int | None = Field(default=None, foreign_key="events.id")
+    registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class CommitteeApplication(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int | None = Field(default=None, foreign_key="user.id")
     committee_id: int | None = Field(default=None, foreign_key="committee.id")
     status: str = Field(default="Pending") # Pending, Accepted, Rejected
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
