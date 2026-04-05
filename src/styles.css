@@ -1023,3 +1023,7 @@ select {
   text-decoration: underline;
 }
 
+.nav-item.active {
+  background: rgba(0, 200, 255, 0.2);
+  border-left: 3px solid #00c6ff;
+}

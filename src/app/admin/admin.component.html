@@ -2,43 +2,64 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sb-head">
-      <div class="sb-brand">
-        <div class="sb-icon"><i class="fas fa-university"></i></div>
-        <div>
-          <div class="sb-title">Council</div>
-          <div class="sb-role">Admin</div>
-        </div>
+
+  <div class="sb-head">
+    <div class="sb-brand">
+      <div class="sb-icon"><i class="fas fa-university"></i></div>
+      <div>
+        <div class="sb-title">Council</div>
+        <div class="sb-role">ADMIN</div>
       </div>
     </div>
+  </div>
 
-    <nav class="sb-nav">
-      <a routerLink="/admin" class="nav-item">
-        <i class="fas fa-th-large"></i>
-        <span>Dashboard</span>
-      </a>
+  <nav class="sb-nav">
 
-      <a routerLink="/news" class="nav-item">
-        <i class="fas fa-newspaper"></i>
-        <span>News</span>
-      </a>
+    <a routerLink="/admin"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="nav-item">
+      <i class="fas fa-th-large"></i>
+      <span>Dashboard</span>
+    </a>
 
-      <a routerLink="/committee" class="nav-item">
-        <i class="fas fa-users"></i>
-        <span>Committee</span>
-      </a>
+    <a routerLink="/news"
+       routerLinkActive="active"
+       class="nav-item">
+      <i class="fas fa-newspaper"></i>
+      <span>News</span>
+    </a>
 
-      <a routerLink="/event-form" class="nav-item">
-        <i class="fas fa-calendar-plus"></i>
-        <span>Add Event</span>
-      </a>
+    <a routerLink="/committee"
+       routerLinkActive="active"
+       class="nav-item">
+      <i class="fas fa-users"></i>
+      <span>Committee</span>
+    </a>
 
-      <a routerLink="/status" class="nav-item active">
-        <i class="fas fa-list"></i>
-        <span>Status</span>
-      </a>
-    </nav>
-  </aside>
+    <a routerLink="/event-form"
+       routerLinkActive="active"
+       class="nav-item">
+      <i class="fas fa-calendar-plus"></i>
+      <span>Add Event</span>
+    </a>
+
+    <a routerLink="/status"
+       routerLinkActive="active"
+       class="nav-item">
+      <i class="fas fa-list"></i>
+      <span>Status</span>
+    </a>
+
+  </nav>
+
+  <!-- LOGOUT -->
+  <div class="logout" (click)="logout()">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Logout</span>
+  </div>
+
+</aside>
 
   <!-- MAIN -->
   <div class="main">

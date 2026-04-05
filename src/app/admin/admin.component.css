@@ -119,3 +119,35 @@ button.reject {
 .status-filters .active {
   background: linear-gradient(to right, #00c6ff, #0072ff);
 }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.nav-item:hover {
+  background: rgba(0, 200, 255, 0.1);
+}
+
+.nav-item.active {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  border-radius: 8px;
+}
+
+.logout {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.logout:hover {
+  color: #ff4d4d;
+}

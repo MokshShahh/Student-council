@@ -11,14 +11,24 @@ import { StatusComponent } from './status/status.component';
 import { NewsComponent } from './news/news.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // DEFAULT PAGE ✅
-  { path: 'events', component: EventsComponent },
+
+  // DEFAULT HOME
+  { path: '', component: HomeComponent },
+
+  // MAIN ROUTES
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'admin', component: AdminComponent },
+
+  { path: 'events', component: EventsComponent },
   { path: 'event-form', component: EventFormComponent },
+  { path: 'committee', component: CommitteeComponent },
+  { path: 'status', component: StatusComponent },
+  { path: 'news', component: NewsComponent },
+
+  // AUTH
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'committee', component: CommitteeComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'status', component: StatusComponent },
-  { path: 'news', component: NewsComponent }
+
+  // 🔥 ADD THIS (VERY IMPORTANT)
+  { path: '**', redirectTo: '' }  // fallback route
 ];
