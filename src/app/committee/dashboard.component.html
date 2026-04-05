@@ -1,185 +1,125 @@
-<div class="shell">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" [class.collapsed]="!sidebarOpen">
-
-    <div class="sb-head">
-      <div class="sb-brand">
-        <div class="sb-icon"><i class="fas fa-university"></i></div>
-        <div>
-          <div class="sb-title">Council</div>
-          <div class="sb-role">Student</div>
-        </div>
-      </div>
-
-      <button class="sb-toggle" (click)="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-
-    <!-- NAVIGATION -->
-    <nav class="sb-nav">
-
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-th-large"></i>
-        <span class="nav-text">Dashboard</span>
-      </a>
-
-      <a routerLink="/committee" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-users"></i>
-        <span class="nav-text">Committee</span>
-      </a>
-
-      <a routerLink="/events" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-calendar"></i>
-        <span class="nav-text">Events</span>
-      </a>
-
-      <a routerLink="/status" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-list"></i>
-        <span class="nav-text">My Status</span>
-      </a>
-
-      <a routerLink="/news" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-newspaper"></i>
-        <span class="nav-text">News</span>
-      </a>
-
-      <a routerLink="/admin" routerLinkActive="active" class="nav-item">
-        <i class="fas fa-user-shield"></i>
-        <span class="nav-text">Admin</span>
-      </a>
-
-    </nav>
-
-    <!-- LOGOUT -->
-    <div class="logout" (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i>
-      <span class="nav-text">Logout</span>
-    </div>
-
-  </aside>
-
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- TOPBAR -->
-    <header class="topnav">
-      <h2>Dashboard</h2>
-    </header>
-
-    <div class="page-area">
-
-      <!-- STATS -->
-      <div class="stats-row">
-
-        <div class="stat-card" routerLink="/events">
-          <div class="stat-ico c1"><i class="fas fa-calendar-alt"></i></div>
-          <div>
-            <span class="stat-val">{{events.length}}</span>
-            <span class="stat-lbl">Open Events</span>
-          </div>
-        </div>
-
-        <div class="stat-card" routerLink="/committee">
-          <div class="stat-ico c2"><i class="fas fa-users"></i></div>
-          <div>
-            <span class="stat-val">{{committees.length}}</span>
-            <span class="stat-lbl">Committees</span>
-          </div>
-        </div>
-
-        <div class="stat-card" routerLink="/status">
-          <div class="stat-ico c3"><i class="fas fa-file-alt"></i></div>
-          <div>
-            <span class="stat-val">0</span>
-            <span class="stat-lbl">Applications</span>
-          </div>
-        </div>
-
-        <div class="stat-card" routerLink="/news">
-          <div class="stat-ico c4"><i class="fas fa-newspaper"></i></div>
-          <div>
-            <span class="stat-val">6</span>
-            <span class="stat-lbl">News</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- EVENTS -->
-      <div class="sec-title">
-        <h3><i class="fas fa-star"></i> Upcoming Events</h3>
-      </div>
-
-      <div class="carousel-box">
-
-        <div *ngFor="let ev of events; let i = index"
-             class="car-slide"
-             [class.active]="i === currentSlide">
-
-          <div class="car-img" [style.background]="ev.gradient">
-
-            <div class="car-bg-icon">
-              <i class="fas" [ngClass]="ev.icon"></i>
-            </div>
-
-            <div class="car-fg">
-
-              <span class="car-tag">
-                <i class="fas fa-tag"></i> {{ev.committee}}
-              </span>
-
-              <h3>{{ev.name}}</h3>
-              <p>{{ev.shortDesc}}</p>
-
-              <!-- FIXED BUTTON -->
-              <button class="btn-view" routerLink="/events">
-                <i class="fas fa-eye"></i> View Details
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <button class="car-arrow left" (click)="prevSlide()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <button class="car-arrow right" (click)="nextSlide()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-
-      </div>
-
-      <!-- COMMITTEES -->
-      <div class="sec-title">
-        <h3><i class="fas fa-users"></i> Our Committees</h3>
-      </div>
-
-      <div class="grid-4">
-
-        <div class="comm-card"
-             *ngFor="let c of committees"
-             routerLink="/committee">
-
-          <div class="comm-top" [style.background]="c.gradient">
-            <i class="fas" [ngClass]="c.icon"></i>
-          </div>
-
-          <div class="comm-body">
-            <h4>{{c.name}}</h4>
-            <p>{{c.members}} Members</p>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
+<div class="page-area">
+  <div class="pg-head">
+    <h2>Committee Dashboard</h2>
+    <p>Manage your events and news updates</p>
+    <button class="btn-pri" routerLink="/event-form">
+      <i class="fas fa-plus"></i> Create New Event
+    </button>
   </div>
 
+  <div class="sec-title">
+    <h3><i class="fas fa-calendar-alt"></i> Your Current Events</h3>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Status</th>
+          <th>Start Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let event of events">
+          <td>{{ event.name }}</td>
+          <td>
+            <span class="spill" [ngClass]="event.is_approved ? 'spill-accepted' : 'spill-pending'">
+              {{ event.is_approved ? 'Approved' : 'Pending Approval' }}
+            </span>
+          </td>
+          <td>{{ event.start_time | date:'short' }}</td>
+        </tr>
+        <tr *ngIf="events.length === 0">
+          <td colspan="3" style="text-align: center; padding: 20px;">No events created yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title" style="margin-top: 40px;">
+    <h3><i class="fas fa-user-plus"></i> Incoming Applications</h3>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of applications">
+          <td>{{ app.user_name }}</td>
+          <td>{{ app.user_email }}</td>
+          <td>
+            <span class="spill" [ngClass]="{
+              'spill-accepted': app.status === 'Accepted',
+              'spill-pending': app.status === 'Pending',
+              'spill-rejected': app.status === 'Rejected'
+            }">{{ app.status }}</span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 5px;" *ngIf="app.status === 'Pending'">
+              <button class="btn-acc" (click)="updateAppStatus(app.id, 'Accepted')"><i class="fas fa-check"></i></button>
+              <button class="btn-rej" (click)="updateAppStatus(app.id, 'Rejected')"><i class="fas fa-times"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="applications.length === 0">
+          <td colspan="4" style="text-align: center; padding: 20px;">No applications yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title" style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+    <h3><i class="fas fa-newspaper"></i> News Management</h3>
+    <button class="btn-view" (click)="toggleNewsForm()">
+      <i class="fas" [ngClass]="showNewsForm ? 'fa-times' : 'fa-plus'"></i> 
+      {{ showNewsForm ? 'Cancel' : 'Add News' }}
+    </button>
+  </div>
+
+  <div class="form-card" *ngIf="showNewsForm">
+    <h3>Create News Update</h3>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" [(ngModel)]="newNews.title" placeholder="News Headline">
+    </div>
+    <div class="form-group">
+      <label>Content</label>
+      <textarea [(ngModel)]="newNews.content" placeholder="Full update content..."></textarea>
+    </div>
+    <button class="btn-pri" (click)="addNews()">Post News</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Posted On</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of news">
+          <td>{{ item.title }}</td>
+          <td>{{ item.created_at | date:'short' }}</td>
+          <td>
+            <button class="btn-rej" (click)="deleteNews(item.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="news.length === 0">
+          <td colspan="3" style="text-align: center; padding: 20px;">No news posted yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

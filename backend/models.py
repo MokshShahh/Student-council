@@ -1,6 +1,6 @@
 from enum import Enum
 from sqlmodel import Field, SQLModel
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class UserRole(str, Enum):
@@ -36,3 +36,18 @@ class Events(SQLModel, table=True):
     start_time: datetime | None = None
     end_time: datetime | None = None
     is_approved: bool = Field(default=False)
+
+class News(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    committee_id: int | None = Field(default=None, foreign_key="committee.id")
+    title: str
+    content: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CommitteeApplication(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int | None = Field(default=None, foreign_key="user.id")
+    committee_id: int | None = Field(default=None, foreign_key="committee.id")
+    status: str = Field(default="Pending") # Pending, Accepted, Rejected
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+

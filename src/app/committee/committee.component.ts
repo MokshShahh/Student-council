@@ -1,57 +1,65 @@
-  import { Component } from '@angular/core';
-  import { CommonModule } from '@angular/common';
-  import { ApplicationService } from '../application.service';
-  import { COMMITTEES } from '../data';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ApplicationService } from '../application.service';
+import { CommitteeService } from '../committee.service';
+import { SafePipe } from '../safe.pipe';
 
-  @Component({
-    selector: 'app-committee',
-    standalone: true,
-    imports: [CommonModule],
-    templateUrl: './committee.component.html',
-    styleUrls: ['./committee.component.css']
-  })
-  export class CommitteeComponent {
-    
+@Component({
+  selector: 'app-committee',
+  standalone: true,
+  imports: [CommonModule, SafePipe],
+  templateUrl: './committee.component.html',
+  styleUrls: ['./committee.component.css']
+})
+export class CommitteeComponent implements OnInit {
 
-    constructor(private appService: ApplicationService) {}
+  committees: any[] = [];
+  selectedCommittee: any = null;
 
-    
-    committees = [
-      {
-        name: 'Technical & Research',
-        members: 32,
-        gradient: 'linear-gradient(135deg,#00c6ff,#0072ff)',
-        icon: 'fa-microchip',
-        desc: 'We organize hackathons and coding competitions.'
-      },
-      {
-        name: 'Cult Com',
-        members: 40,
-        gradient: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
-        icon: 'fa-theater-masks',
-        desc: 'We manage cultural events and festivals.'
-      }
-    ];
+  constructor(
+    private appService: ApplicationService,
+    private committeeService: CommitteeService
+  ) {}
 
-    selectedCommittee: any = null;
-
-    openCommittee(c: any) {
-      this.selectedCommittee = c;
-    }
-
-    closeCommittee() {
-      this.selectedCommittee = null;
-    }
-
-    apply() {
-      this.appService.apply({
-        name: "Riya Sharma",   // later dynamic
-        email: "student@college.com",
-        committee: this.selectedCommittee.name
-      });
-
-      alert("Application Submitted!");
-      this.closeCommittee();
-    }
-    
+  ngOnInit() {
+    this.loadCommittees();
   }
+
+  loadCommittees() {
+    this.committeeService.getCommittees().subscribe({
+      next: (committees) => {
+        // Add default icons/gradients if not present in backend
+        this.committees = committees.map((c: any) => ({
+          ...c,
+          icon: c.icon || 'fa-users',
+          gradient: c.gradient || 'linear-gradient(135deg,#667eea,#764ba2)',
+          members: c.members || 0
+        }));
+      },
+      error: (err) => {
+        console.error('Error fetching committees:', err);
+      }
+    });
+  }
+
+  openCommittee(c: any) {
+    this.selectedCommittee = c;
+  }
+
+  closeCommittee() {
+    this.selectedCommittee = null;
+  }
+
+  apply() {
+    if (!this.selectedCommittee) return;
+
+    this.appService.apply(this.selectedCommittee.id).subscribe({
+      next: () => {
+        alert("Application Submitted!");
+        this.closeCommittee();
+      },
+      error: (err) => {
+        alert("Error: " + (err.error?.detail || "Could not apply"));
+      }
+    });
+  }}

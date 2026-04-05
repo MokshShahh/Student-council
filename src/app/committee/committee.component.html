@@ -9,8 +9,10 @@
          *ngFor="let c of committees"
          (click)="openCommittee(c)">
 
-      <div class="comm-top" [style.background]="c.gradient">
-        <i class="fas" [ngClass]="c.icon"></i>
+      <div class="comm-top" 
+           [style.background]="c.logo_url ? ('url(' + c.logo_url + ') center/cover' | safe:'style') : c.gradient"
+           style="display: flex; align-items: center; justify-content: center;">
+        <i *ngIf="!c.logo_url" class="fas" [ngClass]="c.icon"></i>
       </div>
 
       <div class="comm-body">
@@ -23,24 +25,26 @@
   </div>
 
   <!-- MODAL -->
-  <div class="modal" *ngIf="selectedCommittee">
-    <div class="modal-box">
+  <div class="overlay" [class.open]="selectedCommittee" (click)="closeCommittee()">
+    <div class="modal" *ngIf="selectedCommittee" (click)="$event.stopPropagation()">
+      <div class="modal-x" (click)="closeCommittee()"><i class="fas fa-times"></i></div>
 
-      <button class="close-btn" (click)="closeCommittee()">×</button>
-
-      <div class="modal-header" [style.background]="selectedCommittee.gradient">
-        <i class="fas" [ngClass]="selectedCommittee.icon"></i>
-        <h3>{{selectedCommittee.name}}</h3>
+      <div class="modal-header" 
+           [style.background]="selectedCommittee.logo_url ? ('url(' + selectedCommittee.logo_url + ') center/cover' | safe:'style') : selectedCommittee.gradient"
+           style="height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+        <i *ngIf="!selectedCommittee.logo_url" class="fas" [ngClass]="selectedCommittee.icon" style="font-size: 3rem; margin-bottom: 10px;"></i>
+        <h3 style="background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 5px;">{{selectedCommittee.name}}</h3>
       </div>
 
       <div class="modal-body">
-        <p>{{selectedCommittee.desc}}</p>
+        <p>{{selectedCommittee.description}}</p>
 
-        <div class="info-row">
-          <span><i class="fas fa-users"></i> {{selectedCommittee.members}} Members</span>
+        <div class="modal-meta">
+          <div class="meta-row"><span><i class="fas fa-users"></i> {{selectedCommittee.members}} Members</span></div>
+          <div class="meta-row" *ngIf="selectedCommittee.contact_info"><span><i class="fas fa-envelope"></i> {{selectedCommittee.contact_info}}</span></div>
         </div>
 
-        <button class="apply-btn" (click)="apply()">
+        <button class="btn-pri fw" (click)="apply()">
           <i class="fas fa-paper-plane"></i> Apply Now
         </button>
       </div>

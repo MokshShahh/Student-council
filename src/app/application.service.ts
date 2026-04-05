@@ -1,52 +1,28 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApplicationService {
+  private apiUrl = 'http://localhost:8000/api';
 
-  private key = 'applications';
+  constructor(private http: HttpClient) {}
 
-  // ✅ GET ALL APPLICATIONS
-  getApplications() {
-    return JSON.parse(localStorage.getItem(this.key) || '[]');
+  apply(committeeId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/committees/${committeeId}/apply`, {});
   }
 
-  // ✅ APPLY (STUDENT SIDE)
-  apply(application: any) {
-    const apps = this.getApplications();
-
-    apps.push({
-      id: Date.now(), // ✅ unique id
-      name: application.name,
-      email: application.email,
-      committee: application.committee,
-      status: 'Pending'
-    });
-
-    localStorage.setItem(this.key, JSON.stringify(apps));
+  getCommitteeApplications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/committee/applications`);
   }
 
-  // ✅ UPDATE STATUS (ADMIN SIDE)
-  updateStatus(index: number, status: string) {
-    const apps = this.getApplications();
-
-    if (apps[index]) {
-      apps[index].status = status;
-    }
-
-    localStorage.setItem(this.key, JSON.stringify(apps));
+  getMyApplications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/applications/me`);
   }
 
-  // ✅ DELETE APPLICATION (OPTIONAL FEATURE)
-  delete(index: number) {
-    const apps = this.getApplications();
-    apps.splice(index, 1);
-    localStorage.setItem(this.key, JSON.stringify(apps));
-  }
-
-  // ✅ CLEAR ALL (RESET)
-  clear() {
-    localStorage.removeItem(this.key);
+  updateStatus(appId: number, status: string): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/committee/applications/${appId}?new_status=${status}`, {});
   }
 }

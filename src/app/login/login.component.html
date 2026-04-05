@@ -17,6 +17,12 @@
       </button>
 
       <button 
+        [class.active]="role==='committee'"
+        (click)="setRole('committee')">
+        <i class="fas fa-users"></i> Committee
+      </button>
+
+      <button 
         [class.active]="role==='student'"
         (click)="setRole('student')">
         <i class="fas fa-user-graduate"></i> Student

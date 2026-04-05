@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { CommitteeService } from '../committee.service';
 
 @Component({
   selector: 'app-public-profile',
@@ -56,12 +56,14 @@ import { ActivatedRoute } from '@angular/router';
 export class CommitteePublicProfileComponent implements OnInit {
   data: any = null;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(private committeeService: CommitteeService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.http.get(`http://localhost:8000/api/committee/${id}`).subscribe({
-      next: (res) => this.data = res
-    });
+    if (id) {
+      this.committeeService.getCommitteePublic(+id).subscribe({
+        next: (res) => this.data = res
+      });
+    }
   }
 }

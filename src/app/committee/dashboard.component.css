@@ -1,0 +1,7 @@
+/* Copying styles from student dashboard for consistency, can be customized later */
+@import url('../dashboard/dashboard.component.css');
+
+/* Committee specific dashboard styles can go here */
+.sb-role {
+  color: #fbbf24; /* Amber for committee */
+}

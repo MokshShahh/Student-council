@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,16 +13,15 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
 
-  role: 'admin' | 'student' = 'admin';
-
+  role: 'admin' | 'student' | 'committee' = 'admin';
   email = '';
   password = '';
   error = '';
   showPassword = false;
 
-  constructor(private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  setRole(r: 'admin' | 'student') {
+  setRole(r: 'admin' | 'student' | 'committee') {
     this.role = r;
     this.error = '';
   }
@@ -31,28 +31,30 @@ export class LoginComponent {
   }
 
   login() {
-
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-    const user = users.find((u: any) =>
-      u.email === this.email &&
-      u.password === this.password &&
-      u.role === this.role
-    );
-
-    if (!user) {
-      this.error = 'Invalid credentials';
+    if (!this.email || !this.password) {
+      this.error = 'Please enter email and password';
       return;
     }
 
-    // ✅ SAVE LOGGED USER
-    localStorage.setItem('currentUser', JSON.stringify(user));
-
-    // ✅ REDIRECT BASED ON ROLE
-    if (user.role === 'admin') {
-      this.router.navigate(['/admin']);
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
+    this.auth.login({ email: this.email, password: this.password }).subscribe({
+      next: () => {
+        if (this.auth.isAdmin()) {
+          this.router.navigate(['/admin']);
+        } else if (this.auth.isCommittee()) {
+          const user = this.auth.currentUser();
+          if (user && !user.committee_id) {
+            // Redirect to profile setup if not yet completed
+            this.router.navigate(['/committee/profile-setup']);
+          } else {
+            this.router.navigate(['/committee/dashboard']);
+          }
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: (err) => {
+        this.error = err.error?.detail || 'Invalid credentials';
+      }
+    });
   }
 }

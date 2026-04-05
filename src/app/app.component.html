@@ -4,11 +4,18 @@
   <div>
     <a routerLink="/">Home</a>
     <a routerLink="/events">Events</a>
-    <a routerLink="/event-form">Add Event</a>
-    <a routerLink="/admin">Admin</a>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/register">Register</a>
-    <a routerLink="/dashboard">Dashboard</a>
+    
+    <ng-container *ngIf="auth.currentUser()">
+      <a *ngIf="auth.isCommittee() || auth.isAdmin()" routerLink="/event-form">Add Event</a>
+      <a *ngIf="auth.isAdmin()" routerLink="/admin">Admin</a>
+      <a [routerLink]="auth.isCommittee() ? '/committee/dashboard' : '/dashboard'">Dashboard</a>
+      <a (click)="logout()" style="cursor: pointer;">Logout</a>
+    </ng-container>
+
+    <ng-container *ngIf="!auth.currentUser()">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </ng-container>
   </div>
 </div>
 

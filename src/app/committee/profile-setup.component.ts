@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { CommitteeService } from '../committee.service';
 
 @Component({
   selector: 'app-profile-setup',
@@ -30,8 +30,8 @@ import { AuthService } from '../auth.service';
       </div>
 
       <div class="form-group">
-        <label>Logo URL</label>
-        <input [(ngModel)]="profile.logo_url" placeholder="Link to your logo image">
+        <label>Committee Logo</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
       </div>
 
       <div class="form-group">
@@ -59,34 +59,45 @@ export class CommitteeProfileSetupComponent implements OnInit {
     name: '',
     description: '',
     long_description: '',
-    logo_url: '',
     contact_info: ''
   };
+  selectedFile: File | null = null;
   loading = false;
 
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
+  constructor(private committeeService: CommitteeService, private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.fetchProfile();
   }
 
   fetchProfile() {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.auth.getToken()}`);
-    this.http.get('http://localhost:8000/api/committee/profile/me', { headers }).subscribe({
+    this.committeeService.getMyProfile().subscribe({
       next: (res: any) => {
         if (res) this.profile = res;
       }
     });
   }
 
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
   saveProfile() {
     this.loading = true;
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.auth.getToken()}`);
-    this.http.post('http://localhost:8000/api/committee/profile', this.profile, { headers }).subscribe({
+    const formData = new FormData();
+    formData.append('name', this.profile.name);
+    formData.append('description', this.profile.description || '');
+    formData.append('long_description', this.profile.long_description || '');
+    formData.append('contact_info', this.profile.contact_info || '');
+    if (this.selectedFile) {
+      formData.append('logo', this.selectedFile);
+    }
+
+    this.committeeService.saveProfile(formData).subscribe({
       next: () => {
         this.loading = false;
         alert('Profile saved!');
-        this.router.navigate(['/committee/dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.loading = false;

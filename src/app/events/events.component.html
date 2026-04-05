@@ -1,29 +1,82 @@
 <div class="page-area">
+  <div class="pg-head">
+    <h2>All Events</h2>
+    <p>Browse and register for upcoming events</p>
+  </div>
 
-  <h2>All Events</h2>
-
-  <div class="grid-4">
-    <div class="comm-card" *ngFor="let e of events" (click)="openEvent(e)">
-      <div class="comm-top" [style.background]="e.gradient">
-        <i class="fas" [ngClass]="e.icon"></i>
+  <div class="ev-grid">
+    <div class="ev-card" *ngFor="let e of events">
+      <div class="ev-top" [style.background-image]="'url(' + (e.banner || 'https://via.placeholder.com/400x150') + ')' | safe:'style'" style="background-size: cover;">
+        <span class="ev-pill pill-open">Open</span>
       </div>
 
-      <div class="comm-body">
-        <h4>{{e.name}}</h4>
-        <p>{{e.shortDesc}}</p>
-        <span>{{e.date}}</span>
+      <div class="ev-body">
+        <div class="ev-comm">{{ e.committee_name || 'Committee' }}</div>
+        <h4>{{ e.name }}</h4>
+        <p>{{ e.description }}</p>
+        <div class="ev-meta">
+          <span><i class="fas fa-calendar"></i> {{ e.start_time | date:'short' }}</span>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+           <button class="btn-view" (click)="openEvent(e)">
+             <i class="fas fa-eye"></i> View Details
+           </button>
+           <button class="btn-pri" (click)="register(e.id)" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">
+             <i class="fas fa-user-plus"></i> Register
+           </button>
+        </div>
       </div>
     </div>
+  </div>
+
+  <div class="sec-title" style="margin-top: 60px;">
+    <h3><i class="fas fa-newspaper"></i> Latest News</h3>
+  </div>
+
+  <div class="grid-3" *ngIf="newsList.length > 0">
+    <div class="news-card" *ngFor="let item of newsList">
+      <div class="news-top">
+        <span class="nbadge">{{ item.committee_name }}</span>
+      </div>
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.content }}</p>
+      <div class="news-foot">
+        <span><i class="fas fa-clock"></i> {{ item.created_at | date:'mediumDate' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-st" *ngIf="newsList.length === 0" style="padding: 2rem;">
+    <p>No news updates available.</p>
   </div>
 
   <!-- MODAL -->
-  <div class="modal" *ngIf="selectedEvent">
-    <div class="modal-box">
-      <h3>{{selectedEvent.name}}</h3>
-      <p>{{selectedEvent.shortDesc}}</p>
-      <button (click)="register()">Register</button>
-      <button (click)="closeEvent()">Close</button>
+  <div class="overlay" [class.open]="selectedEvent" (click)="closeEvent()">
+    <div class="modal" *ngIf="selectedEvent" (click)="$event.stopPropagation()">
+      <div class="modal-x" (click)="closeEvent()"><i class="fas fa-times"></i></div>
+      
+      <div class="modal-head" [style.background-image]="'url(' + (selectedEvent.banner || 'https://via.placeholder.com/600x200') + ')' | safe:'style'" style="background-size: cover; height: 200px;">
+        <h3 style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">{{selectedEvent.name}}</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-desc">{{selectedEvent.description}}</div>
+        
+        <div class="modal-meta">
+          <div class="meta-row"><i class="fas fa-calendar-alt"></i> <b>Start:</b> {{selectedEvent.start_time | date:'medium'}}</div>
+          <div class="meta-row" *ngIf="selectedEvent.end_time"><i class="fas fa-calendar-check"></i> <b>End:</b> {{selectedEvent.end_time | date:'medium'}}</div>
+          <div class="meta-row" *ngIf="selectedEvent.registration_link">
+            <i class="fas fa-link"></i> <b>Link:</b> <a [href]="selectedEvent.registration_link" target="_blank">{{selectedEvent.registration_link}}</a>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pri fw" (click)="register(selectedEvent.id)">
+            <i class="fas fa-user-plus"></i> Register Now
+          </button>
+          <button class="btn-out" (click)="closeEvent()">Close</button>
+        </div>
+      </div>
     </div>
   </div>
-
 </div>

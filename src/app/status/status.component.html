@@ -1,27 +1,37 @@
 <div class="page-area">
-
-  <h2>My Application Status</h2>
-
-  <div *ngIf="applications.length === 0">
-    <p>No applications yet.</p>
+  <div class="pg-head">
+    <h2>My Applications</h2>
+    <p>Track the status of your committee applications</p>
   </div>
 
-  <table *ngIf="applications.length > 0" class="status-table">
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Committee</th>
-      <th>Status</th>
-    </tr>
+  <div class="tbl-wrap" *ngIf="applications.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Committee Name</th>
+          <th>Applied On</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of applications">
+          <td>{{ app.committee_name }}</td>
+          <td>{{ app.created_at | date:'mediumDate' }}</td>
+          <td>
+            <span class="spill" [ngClass]="{
+              'spill-accepted': app.status === 'Accepted',
+              'spill-pending': app.status === 'Pending',
+              'spill-rejected': app.status === 'Rejected'
+            }">{{ app.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <tr *ngFor="let app of applications">
-      <td>{{app.name}}</td>
-      <td>{{app.email}}</td>
-      <td>{{app.committee}}</td>
-      <td [ngClass]="app.status.toLowerCase()">
-        {{app.status}}
-      </td>
-    </tr>
-  </table>
-
+  <div class="empty-st" *ngIf="applications.length === 0">
+    <i class="fas fa-file-invoice"></i>
+    <p>You haven't applied to any committees yet.</p>
+    <button class="btn-pri" routerLink="/committee">Browse Committees</button>
+  </div>
 </div>

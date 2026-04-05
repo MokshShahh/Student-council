@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from sqlmodel import Session, SQLModel, create_engine, select
 import os
+import shutil
+import uuid
 from models import *
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
@@ -17,6 +20,11 @@ load_dotenv()
 SECRET_KEY = os.getenv("jwt_secret") or "no secret"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+UPLOAD_DIR = "uploads" # Local to backend dir
+
+# Ensure upload directory exists
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 class Token(BaseModel):
     access_token: str
@@ -109,10 +117,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve static files
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
 @app.on_event("startup")
 def on_startup():
-    # Only use this during development to sync schema changes if needed
-    # SQLModel.metadata.drop_all(engine) 
     create_db_and_tables()
 
 @app.get("/")
@@ -128,22 +137,53 @@ class UserRegister(BaseModel):
 
 @app.post("/register")
 async def register_user(
-    user_data: UserRegister,
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+    email: str = Form(...),
+    password: str = Form(...),
+    full_name: str = Form(None),
+    phone: str = Form(None),
+    role: str = Form("student"),
+    committee_name: str = Form(None),
+    logo: UploadFile = File(None)
 ):
-    existing_user = get_user(user_data.email, session)
+    existing_user = get_user(email, session)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already registered"
         )
     
+    committee_id = None
+    if role == "committee":
+        if not committee_name:
+             raise HTTPException(status_code=400, detail="Committee name is required")
+        
+        # Check if committee exists
+        stmt = select(Committee).where(Committee.name == committee_name)
+        if session.exec(stmt).first():
+             raise HTTPException(status_code=400, detail="Committee name already exists")
+        
+        logo_url = None
+        if logo:
+            filename = f"{uuid.uuid4()}_{logo.filename}"
+            file_path = os.path.join(UPLOAD_DIR, filename)
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(logo.file, buffer)
+            logo_url = f"http://localhost:8000/uploads/{filename}"
+        
+        new_committee = Committee(name=committee_name, logo_url=logo_url)
+        session.add(new_committee)
+        session.commit()
+        session.refresh(new_committee)
+        committee_id = new_committee.id
+
     new_user = User(
-        email=user_data.email,
-        hashed_password=get_password_hash(user_data.password),
-        full_name=user_data.full_name,
-        phone=user_data.phone,
-        role=user_data.role
+        email=email,
+        hashed_password=get_password_hash(password),
+        full_name=full_name,
+        phone=phone,
+        role=role,
+        committee_id=committee_id
     )
     
     session.add(new_user)
@@ -180,15 +220,15 @@ async def get_events(session: Annotated[Session, Depends(get_session)]):
     results = session.exec(statement)
     return results.all()
 
-@app.get("/api/admin/events")
-async def get_all_events_admin(
+@app.get("/api/admin/events/pending")
+async def get_pending_events(
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Not authorized")
     
-    statement = select(Events)
+    statement = select(Events).where(Events.is_approved == False)
     results = session.exec(statement)
     return results.all()
 
@@ -213,37 +253,163 @@ async def approve_event(
 
 @app.post("/api/events")
 async def add_event(
-    event: Events,
     session: Annotated[Session, Depends(get_session)],
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_user)],
+    name: str = Form(...),
+    description: Optional[str] = Form(None),
+    registration_link: Optional[str] = Form(None),
+    start_time: Optional[datetime] = Form(None),
+    end_time: Optional[datetime] = Form(None),
+    banner: UploadFile = File(None)
 ):
     if current_user.role != UserRole.COMMITTEE and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Not authorized to create events")
     
+    banner_url = None
+    if banner:
+        filename = f"{uuid.uuid4()}_{banner.filename}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(banner.file, buffer)
+        banner_url = f"http://localhost:8000/uploads/{filename}"
+    
+    new_event = Events(
+        name=name,
+        description=description,
+        registration_link=registration_link,
+        start_time=start_time,
+        end_time=end_time,
+        banner=banner_url,
+        is_approved=False
+    )
+    
     if current_user.role == UserRole.COMMITTEE:
         if not current_user.committee_id:
             raise HTTPException(status_code=400, detail="Committee profile not set up")
-        event.committee_id = current_user.committee_id
-        event.is_approved = False # Needs admin approval
+        new_event.committee_id = current_user.committee_id
+    else:
+        new_event.is_approved = True
         
-    session.add(event)
+    session.add(new_event)
     session.commit()
-    session.refresh(event)
-    return event
+    session.refresh(new_event)
+    return new_event
 
-@app.get("/api/committee/{committee_id}")
-async def get_committee_public(
-    committee_id: int,
+@app.post("/api/events/{event_id}/register")
+async def register_for_event(
+    event_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[Session, Depends(get_session)]
 ):
-    committee = session.get(Committee, committee_id)
-    if not committee:
-        raise HTTPException(status_code=404, detail="Committee not found")
+    # Fix for EventRegistration model reference
+    statement = select(EventRegistration).where(
+        EventRegistration.user_id == current_user.id,
+        EventRegistration.event_id == event_id
+    )
+    existing = session.exec(statement).first()
+    if existing:
+        return {"message": "Already registered"}
     
-    statement = select(Events).where(Events.committee_id == committee_id, Events.is_approved == True)
-    events = session.exec(statement).all()
+    registration = EventRegistration(user_id=current_user.id, event_id=event_id)
+    session.add(registration)
+    session.commit()
+    return {"message": "Registered successfully"}
+
+@app.get("/api/events/me")
+async def get_my_events(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    # Added join fix
+    statement = select(Events).join(EventRegistration).where(EventRegistration.user_id == current_user.id)
+    results = session.exec(statement)
+    return results.all()
+
+@app.get("/api/committees")
+async def get_committees(session: Annotated[Session, Depends(get_session)]):
+    statement = select(Committee)
+    results = session.exec(statement)
+    return results.all()
+
+@app.post("/api/committees/{committee_id}/apply")
+async def apply_to_committee(
+    committee_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    # Check if already applied
+    stmt = select(CommitteeApplication).where(
+        CommitteeApplication.user_id == current_user.id,
+        CommitteeApplication.committee_id == committee_id
+    )
+    if session.exec(stmt).first():
+        raise HTTPException(status_code=400, detail="Already applied to this committee")
     
-    return {"committee": committee, "events": events}
+    app = CommitteeApplication(user_id=current_user.id, committee_id=committee_id)
+    session.add(app)
+    session.commit()
+    return {"message": "Application submitted"}
+
+@app.get("/api/applications/me")
+async def get_my_applications(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    stmt = select(CommitteeApplication, Committee.name).join(Committee).where(
+        CommitteeApplication.user_id == current_user.id
+    )
+    results = session.exec(stmt).all()
+    
+    apps = []
+    for application, committee_name in results:
+        d = application.dict()
+        d["committee_name"] = committee_name
+        apps.append(d)
+    return apps
+
+@app.get("/api/committee/applications")
+async def get_committee_applications(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE or not current_user.committee_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Select applications joined with user info
+    stmt = select(CommitteeApplication, User.full_name, User.email).join(User).where(
+        CommitteeApplication.committee_id == current_user.committee_id
+    )
+    results = session.exec(stmt).all()
+    
+    apps = []
+    for application, name, email in results:
+        d = application.dict()
+        d["user_name"] = name
+        d["user_email"] = email
+        apps.append(d)
+    return apps
+
+@app.patch("/api/committee/applications/{app_id}")
+async def update_application_status(
+    app_id: int,
+    new_status: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    application = session.get(CommitteeApplication, app_id)
+    if not application:
+        raise HTTPException(status_code=404, detail="Application not found")
+    
+    if current_user.role != UserRole.COMMITTEE or application.committee_id != current_user.committee_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    if new_status not in ["Accepted", "Rejected", "Pending"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    application.status = new_status
+    session.add(application)
+    session.commit()
+    return application
 
 @app.get("/api/committee/profile/me")
 async def get_my_committee_profile(
@@ -252,48 +418,52 @@ async def get_my_committee_profile(
 ):
     if current_user.role != UserRole.COMMITTEE:
         raise HTTPException(status_code=403, detail="Not a committee user")
-    
     if not current_user.committee_id:
         return None
-        
     committee = session.get(Committee, current_user.committee_id)
     return committee
 
 @app.post("/api/committee/profile")
 async def setup_committee_profile(
-    committee_data: Committee,
+    session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)],
-    session: Annotated[Session, Depends(get_session)]
+    name: str = Form(...),
+    description: Optional[str] = Form(None),
+    long_description: Optional[str] = Form(None),
+    contact_info: Optional[str] = Form(None),
+    logo: UploadFile = File(None)
 ):
     if current_user.role != UserRole.COMMITTEE:
         raise HTTPException(status_code=403, detail="Not authorized")
     
+    logo_url = None
+    if logo:
+        filename = f"{uuid.uuid4()}_{logo.filename}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(logo.file, buffer)
+        logo_url = f"http://localhost:8000/uploads/{filename}"
+    
     if current_user.committee_id:
-        # Update existing
         db_committee = session.get(Committee, current_user.committee_id)
-        if not db_committee:
-             raise HTTPException(status_code=404, detail="Committee profile missing")
-        
-        db_committee.name = committee_data.name
-        db_committee.description = committee_data.description
-        db_committee.long_description = committee_data.long_description
-        db_committee.logo_url = committee_data.logo_url
-        db_committee.contact_info = committee_data.contact_info
-        
+        db_committee.name = name
+        db_committee.description = description
+        db_committee.long_description = long_description
+        if logo_url:
+            db_committee.logo_url = logo_url
+        db_committee.contact_info = contact_info
         session.add(db_committee)
     else:
-        # Create new
         new_committee = Committee(
-            name=committee_data.name,
-            description=committee_data.description,
-            long_description=committee_data.long_description,
-            logo_url=committee_data.logo_url,
-            contact_info=committee_data.contact_info
+            name=name,
+            description=description,
+            long_description=long_description,
+            logo_url=logo_url,
+            contact_info=contact_info
         )
         session.add(new_committee)
         session.commit()
         session.refresh(new_committee)
-        
         current_user.committee_id = new_committee.id
         session.add(current_user)
         
@@ -307,7 +477,63 @@ async def get_committee_events(
 ):
     if current_user.role != UserRole.COMMITTEE or not current_user.committee_id:
         raise HTTPException(status_code=403, detail="Not authorized")
-        
     statement = select(Events).where(Events.committee_id == current_user.committee_id)
     results = session.exec(statement)
     return results.all()
+
+@app.get("/api/news")
+async def get_all_news(session: Annotated[Session, Depends(get_session)]):
+    statement = select(News, Committee.name).join(Committee).order_by(News.created_at.desc())
+    results = session.exec(statement).all()
+    news_list = []
+    for news, committee_name in results:
+        news_dict = news.dict()
+        news_dict["committee_name"] = committee_name
+        news_list.append(news_dict)
+    return news_list
+
+@app.get("/api/committee/news")
+async def get_committee_news(
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE or not current_user.committee_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    statement = select(News).where(News.committee_id == current_user.committee_id).order_by(News.created_at.desc())
+    results = session.exec(statement)
+    return results.all()
+
+@app.post("/api/news")
+async def create_news(
+    news_data: dict,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    if current_user.role != UserRole.COMMITTEE or not current_user.committee_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    new_news = News(
+        committee_id=current_user.committee_id,
+        title=news_data.get("title"),
+        content=news_data.get("content")
+    )
+    session.add(new_news)
+    session.commit()
+    session.refresh(new_news)
+    return new_news
+
+@app.delete("/api/news/{news_id}")
+async def delete_news(
+    news_id: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[Session, Depends(get_session)]
+):
+    news = session.get(News, news_id)
+    if not news:
+        raise HTTPException(status_code=404, detail="News not found")
+    if news.committee_id != current_user.committee_id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    session.delete(news)
+    session.commit()
+    return {"message": "News deleted"}

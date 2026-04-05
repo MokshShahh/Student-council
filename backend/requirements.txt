@@ -6,3 +6,4 @@ pwdlib[argon2]
 PyJWT
 pydantic
 psycopg2-binary
+python-multipart

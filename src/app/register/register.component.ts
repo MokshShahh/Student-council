@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
 
-  role: 'admin' | 'student' = 'student';
+  role: 'student' | 'committee' = 'student';
 
   name = '';
   email = '';
@@ -20,12 +21,15 @@ export class RegisterComponent {
   confirmPassword = '';
   showPassword = false;
 
+  committeeName = '';
+  selectedLogo: File | null = null;
+
   error = '';
   success = '';
 
-  constructor(private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  setRole(r: 'admin' | 'student') {
+  setRole(r: 'student' | 'committee') {
     this.role = r;
     this.error = '';
     this.success = '';
@@ -35,8 +39,11 @@ export class RegisterComponent {
     this.showPassword = !this.showPassword;
   }
 
-  register() {
+  onLogoSelected(event: any) {
+    this.selectedLogo = event.target.files[0];
+  }
 
+  register() {
     if (!this.name || !this.email || !this.password || !this.confirmPassword) {
       this.error = 'Please fill all fields';
       return;
@@ -47,26 +54,35 @@ export class RegisterComponent {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (this.role === 'committee' && !this.committeeName) {
+      this.error = 'Committee name is required';
+      return;
+    }
 
-    users.push({
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      role: this.role
+    const formData = new FormData();
+    formData.append('email', this.email);
+    formData.append('password', this.password);
+    formData.append('full_name', this.name);
+    formData.append('role', this.role);
+    
+    if (this.role === 'committee') {
+      formData.append('committee_name', this.committeeName);
+      if (this.selectedLogo) {
+        formData.append('logo', this.selectedLogo);
+      }
+    }
+
+    this.auth.register(formData).subscribe({
+      next: (res) => {
+        this.success = 'Registration successful! Redirecting to login...';
+        this.error = '';
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1500);
+      },
+      error: (err: any) => {
+        this.error = err.error?.detail || 'Registration failed';
+      }
     });
-
-    localStorage.setItem('users', JSON.stringify(users));
-
-    this.success = 'Registration successful! Redirecting...';
-    this.error = '';
-
-    setTimeout(() => {
-  if (this.role === 'admin') {
-    this.router.navigate(['/admin']);
-  } else {
-    this.router.navigate(['/dashboard']);
-  }
-}, 1000);
   }
 }

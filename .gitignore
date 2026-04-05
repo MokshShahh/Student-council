@@ -149,3 +149,4 @@ test
 *.pyo
 *.pyd
 __pycache__/
+uploads

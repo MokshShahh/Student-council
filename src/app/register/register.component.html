@@ -11,9 +11,9 @@
     <!-- TOGGLE -->
     <div class="toggle">
       <button 
-        [class.active]="role==='admin'"
-        (click)="setRole('admin')">
-        <i class="fas fa-user-shield"></i> Admin
+        [class.active]="role==='committee'"
+        (click)="setRole('committee')">
+        <i class="fas fa-users"></i> Committee
       </button>
 
       <button 
@@ -25,8 +25,8 @@
 
     <!-- NAME -->
     <div class="input-group">
-      <label>Name</label>
-      <input type="text" [(ngModel)]="name" placeholder="Enter name">
+      <label>Full Name</label>
+      <input type="text" [(ngModel)]="name" placeholder="Enter your full name">
     </div>
 
     <!-- EMAIL -->
@@ -59,6 +59,19 @@
         [(ngModel)]="confirmPassword"
         placeholder="Confirm password">
     </div>
+
+    <!-- COMMITTEE SPECIFIC -->
+    <ng-container *ngIf="role === 'committee'">
+      <div class="input-group">
+        <label>Committee Name</label>
+        <input type="text" [(ngModel)]="committeeName" placeholder="Enter committee name">
+      </div>
+
+      <div class="input-group">
+        <label>Committee Logo</label>
+        <input type="file" (change)="onLogoSelected($event)" accept="image/*">
+      </div>
+    </ng-container>
 
     <!-- ERROR -->
     <div class="error" *ngIf="error">

@@ -1,42 +1,40 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class EventService {
+  private apiUrl = 'http://localhost:8000/api';
 
-  private events = [
-    {
-      id: 1,
-      name: "Hackathon 2026",
-      description: "24-hour coding competition",
-      is_approved: true,
-      banner: "https://via.placeholder.com/400x200",
-      start_time: new Date()
-    },
-    {
-      id: 2,
-      name: "Cultural Fest",
-      description: "Dance, music, and fun",
-      is_approved: false,
-      banner: "https://via.placeholder.com/400x200",
-      start_time: new Date()
-    }
-  ];
+  constructor(private http: HttpClient) {}
 
   getEvents(): Observable<any[]> {
-    return of(this.events);
+    return this.http.get<any[]>(`${this.apiUrl}/events`);
   }
 
-  addEvent(event: any): Observable<any> {
-    event.id = Date.now();
-    event.is_approved = false;
-    this.events.push(event);
-    return of(event);
+  getPendingEvents(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/events/pending`);
   }
 
   approveEvent(id: number): Observable<any> {
-    const event = this.events.find(e => e.id === id);
-    if (event) event.is_approved = true;
-    return of(event);
+    return this.http.patch<any>(`${this.apiUrl}/events/${id}/approve`, {});
+  }
+
+  createEvent(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/events`, formData);
+  }
+
+  getCommitteeEvents(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/committee/dashboard/events`);
+  }
+
+  registerForEvent(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/events/${id}/register`, {});
+  }
+
+  getMyEvents(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/events/me`);
   }
 }

@@ -1,10 +1,45 @@
-<div class="auth-box">
+<div class="shell">
+  <div class="main">
+    <header class="topnav">
+      <h2>Create New Event</h2>
+    </header>
 
-  <h2>Register Event</h2>
+    <div class="page-area">
+      <div class="form-card">
+        <div class="input-group">
+          <label>Event Title</label>
+          <input type="text" [(ngModel)]="title" placeholder="Enter event name">
+        </div>
 
-  <input placeholder="Event Title" [(ngModel)]="title">
-  <input placeholder="Description" [(ngModel)]="description">
+        <div class="input-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="description" placeholder="Short description"></textarea>
+        </div>
 
-  <button (click)="submit()">Submit</button>
+        <div class="input-group">
+          <label>Registration Link (Optional)</label>
+          <input type="text" [(ngModel)]="registrationLink" placeholder="Link to register">
+        </div>
 
+        <div class="input-group">
+          <label>Start Time (Optional)</label>
+          <input type="datetime-local" [(ngModel)]="startTime">
+        </div>
+
+        <div class="input-group">
+          <label>End Time (Optional)</label>
+          <input type="datetime-local" [(ngModel)]="endTime">
+        </div>
+
+        <div class="input-group">
+          <label>Event Banner</label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*">
+        </div>
+
+        <button class="submit-btn" (click)="submit()">
+          <i class="fas fa-plus"></i> Create Event
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

@@ -14,18 +14,36 @@ export class EventFormComponent {
 
   title = '';
   description = '';
+  registrationLink = '';
+  startTime = '';
+  endTime = '';
+  selectedFile: File | null = null;
 
   constructor(private eventService: EventService, private router: Router) {}
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
 
   submit() {
     if (!this.title || !this.description) return;
 
-    this.eventService.addEvent({
-      name: this.title,
-      description: this.description
-    }).subscribe(() => {
-      alert("Event Added!");
-      this.router.navigate(['/events']);
+    const formData = new FormData();
+    formData.append('name', this.title);
+    formData.append('description', this.description);
+    if (this.registrationLink) formData.append('registration_link', this.registrationLink);
+    if (this.startTime) formData.append('start_time', this.startTime);
+    if (this.endTime) formData.append('end_time', this.endTime);
+    if (this.selectedFile) formData.append('banner', this.selectedFile);
+
+    this.eventService.createEvent(formData).subscribe({
+      next: () => {
+        alert("Event Added!");
+        this.router.navigate(['/events']);
+      },
+      error: (err: any) => {
+        alert("Error adding event: " + (err.error?.detail || "Unknown error"));
+      }
     });
   }
 }

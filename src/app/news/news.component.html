@@ -1,26 +1,24 @@
 <div class="page-area">
-
-  <h2 class="page-title">News & Announcements</h2>
-
-  <div class="grid-4">
-
-    <div class="news-card" *ngFor="let n of newsList">
-
-      <div class="news-tag" [ngClass]="n.category.toLowerCase()">
-        {{n.category}}
-      </div>
-
-      <h3>{{n.title}}</h3>
-
-      <p>{{n.desc}}</p>
-
-      <div class="news-footer">
-        <span><i class="fas fa-clock"></i> {{n.date}}</span>
-        <span><i class="fas fa-user"></i> Admin</span>
-      </div>
-
-    </div>
-
+  <div class="pg-head">
+    <h2>Campus News</h2>
+    <p>Latest updates from all committees</p>
   </div>
 
+  <div class="grid-3" *ngIf="newsList.length > 0">
+    <div class="news-card" *ngFor="let item of newsList">
+      <div class="news-top">
+        <span class="nbadge nb-announcement">{{ item.committee_name }}</span>
+      </div>
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.content }}</p>
+      <div class="news-foot">
+        <span><i class="fas fa-clock"></i> {{ item.created_at | date:'mediumDate' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-st" *ngIf="newsList.length === 0">
+    <i class="fas fa-newspaper"></i>
+    <p>No news updates available at the moment.</p>
+  </div>
 </div>

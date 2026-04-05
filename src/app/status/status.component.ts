@@ -6,8 +6,7 @@ import { ApplicationService } from '../application.service';
   selector: 'app-status',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './status.component.html',
-  styleUrls: ['./status.component.css']
+  templateUrl: './status.component.html'
 })
 export class StatusComponent implements OnInit {
 
@@ -16,6 +15,15 @@ export class StatusComponent implements OnInit {
   constructor(private appService: ApplicationService) {}
 
   ngOnInit() {
-    this.applications = this.appService.getApplications();
+    this.loadStatus();
+  }
+
+  loadStatus() {
+    this.appService.getMyApplications().subscribe({
+      next: (apps: any[]) => {
+        this.applications = apps;
+      },
+      error: (err: any) => console.error('Error loading applications:', err)
+    });
   }
 }
