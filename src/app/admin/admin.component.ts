@@ -11,13 +11,37 @@ import { ApplicationService } from '../application.service';
 })
 export class AdminComponent implements OnInit {
 
-  applications: any[] = [];
+ applications = [
+  {
+    name: 'Arjun Patel',
+    email: 'arjun@student.com',
+    committee: 'Cult Com',
+    status: 'Accepted'
+  },
+  {
+    name: 'Karan Singh',
+    email: 'karan@student.com',
+    committee: 'Sports Committee',
+    status: 'Rejected'
+  },
+  {
+    name: 'Riya Sharma',
+    email: 'riya@student.com',
+    committee: 'Tech',
+    status: 'Pending'
+  }
+];
+  
 
   constructor(private appService: ApplicationService) {}
 currentUser: any;
 
 ngOnInit() {
   this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+}
+
+getCount(status: string) {
+  return this.applications.filter(a => a.status === status).length;
 }
 
   loadApplications() {

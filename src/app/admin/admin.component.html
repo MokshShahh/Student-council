@@ -1,34 +1,113 @@
-<div class="page-area">
+<div class="shell">
 
-  <h2>Admin Panel - Applications</h2>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <div class="sb-icon"><i class="fas fa-university"></i></div>
+        <div>
+          <div class="sb-title">Council</div>
+          <div class="sb-role">Admin</div>
+        </div>
+      </div>
+    </div>
 
-  <table class="admin-table">
+    <nav class="sb-nav">
+      <a routerLink="/admin" class="nav-item">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
 
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Committee</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
+      <a routerLink="/news" class="nav-item">
+        <i class="fas fa-newspaper"></i>
+        <span>News</span>
+      </a>
 
-    <tr *ngFor="let app of applications; let i = index">
+      <a routerLink="/committee" class="nav-item">
+        <i class="fas fa-users"></i>
+        <span>Committee</span>
+      </a>
 
-      <td>{{app.name}}</td>
-      <td>{{app.email}}</td>
-      <td>{{app.committee}}</td>
+      <a routerLink="/event-form" class="nav-item">
+        <i class="fas fa-calendar-plus"></i>
+        <span>Add Event</span>
+      </a>
 
-      <td [ngClass]="app.status.toLowerCase()">
-        {{app.status}}
-      </td>
+      <a routerLink="/status" class="nav-item active">
+        <i class="fas fa-list"></i>
+        <span>Status</span>
+      </a>
+    </nav>
+  </aside>
 
-      <td>
-        <button class="approve" (click)="approve(i)">Approve</button>
-        <button class="reject" (click)="reject(i)">Reject</button>
-      </td>
+  <!-- MAIN -->
+  <div class="main">
 
-    </tr>
+    <!-- TOPBAR -->
+    <header class="topnav">
+      <h2>Application Status</h2>
+    </header>
 
-  </table>
+    <div class="page-area">
+
+      <!-- FILTER BUTTONS -->
+      <div class="status-filters">
+        <button class="active">Accepted ({{getCount('Accepted')}})</button>
+        <button>Rejected ({{getCount('Rejected')}})</button>
+        <button>Pending ({{getCount('Pending')}})</button>
+      </div>
+
+      <!-- TABLE -->
+      <table class="admin-table">
+
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Committee</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+
+        <tr *ngFor="let app of applications; let i = index">
+
+          <td>{{i+1}}</td>
+
+          <td>
+            <div class="user-cell">
+              <div class="avatar">{{app.name[0]}}</div>
+              {{app.name}}
+            </div>
+          </td>
+
+          <td>{{app.email}}</td>
+
+          <td>
+            <span class="tag">{{app.committee}}</span>
+          </td>
+
+          <td>
+            <span class="status" [ngClass]="app.status.toLowerCase()">
+              {{app.status}}
+            </span>
+          </td>
+
+          <td>
+            <button class="approve" (click)="approve(i)">
+              ✔ Approve
+            </button>
+
+            <button class="reject" (click)="reject(i)">
+              ✖ Reject
+            </button>
+          </td>
+
+        </tr>
+
+      </table>
+
+    </div>
+
+  </div>
 
 </div>
