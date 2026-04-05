@@ -1,34 +1,27 @@
 <div class="page-area">
 
-  <h2>Admin Panel - Applications</h2>
+  <h2>My Application Status</h2>
 
-  <table class="admin-table">
+  <div *ngIf="applications.length === 0">
+    <p>No applications yet.</p>
+  </div>
 
+  <table *ngIf="applications.length > 0" class="status-table">
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Committee</th>
       <th>Status</th>
-      <th>Action</th>
     </tr>
 
-    <tr *ngFor="let app of applications; let i = index">
-
+    <tr *ngFor="let app of applications">
       <td>{{app.name}}</td>
       <td>{{app.email}}</td>
       <td>{{app.committee}}</td>
-
       <td [ngClass]="app.status.toLowerCase()">
         {{app.status}}
       </td>
-
-      <td>
-        <button class="approve" (click)="approve(i)">Approve</button>
-        <button class="reject" (click)="reject(i)">Reject</button>
-      </td>
-
     </tr>
-
   </table>
 
 </div>

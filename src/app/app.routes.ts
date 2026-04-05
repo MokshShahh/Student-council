@@ -7,6 +7,8 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CommitteeComponent } from './committee/committee.component';
+import { StatusComponent } from './status/status.component';
+import { NewsComponent } from './news/news.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // DEFAULT PAGE ✅
@@ -16,5 +18,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'committee', component: CommitteeComponent },
-  { path: 'dashboard', component: DashboardComponent }
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'status', component: StatusComponent },
+  { path: 'news', component: NewsComponent }
 ];
