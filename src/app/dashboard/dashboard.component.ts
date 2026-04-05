@@ -35,4 +35,6 @@ ngOnInit() {
     this.currentSlide =
       (this.currentSlide - 1 + this.events.length) % this.events.length;
   }
+
+  
 }
