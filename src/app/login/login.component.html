@@ -1,20 +1,73 @@
-<div class="auth-box">
+<div class="login-page">
 
-  <h2>Login</h2>
+  <div class="login-card">
 
-  <input type="email" placeholder="Email" [(ngModel)]="email">
-  <div class="error" *ngIf="emailError">{{emailError}}</div>
+    <div class="logo">
+      <div class="icon"><i class="fas fa-university"></i></div>
+      <h1>MPSTME Student Council</h1>
+      <p>Lead. Innovate. Inspire.</p>
+    </div>
 
-  <input type="password" placeholder="Password" [(ngModel)]="password">
-  <div class="error" *ngIf="passwordError">{{passwordError}}</div>
+    <!-- TOGGLE -->
+    <div class="toggle">
+      <button 
+        [class.active]="role==='admin'"
+        (click)="setRole('admin')">
+        <i class="fas fa-user-shield"></i> Admin
+      </button>
 
-  <button (click)="login()">Login</button>
+      <button 
+        [class.active]="role==='student'"
+        (click)="setRole('student')">
+        <i class="fas fa-user-graduate"></i> Student
+      </button>
+    </div>
 
-  <div *ngIf="loading" class="loader"></div>
+    <!-- EMAIL -->
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" placeholder="Enter email">
+    </div>
 
-<p>
-  Don't have an account?
-  <a routerLink="/register" class="link">Register</a>
-</p>
+    <!-- PASSWORD -->
+    <div class="input-group">
+      <label>Password</label>
+
+      <div class="password-box">
+        <input 
+          [type]="showPassword ? 'text' : 'password'" 
+          [(ngModel)]="password"
+          placeholder="Enter password">
+
+        <i class="fas"
+           [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+           (click)="togglePassword()"></i>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error" *ngIf="error">
+      {{error}}
+    </div>
+
+    <!-- BUTTON -->
+    <button class="login-btn" (click)="login()">
+      Sign In →
+    </button>
+
+    <!-- HINT (FIXED @ ISSUE) -->
+    <div class="hint">
+
+      <span *ngIf="role==='admin'">
+        Admin: admin&#64;council.com / admin123
+      </span>
+
+      <span *ngIf="role==='student'">
+        Student: student&#64;council.com / student123
+      </span>
+
+    </div>
+
+  </div>
 
 </div>

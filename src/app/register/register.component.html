@@ -1,27 +1,86 @@
-<div class="auth-box">
+<div class="login-page">
 
-  <h2>Register</h2>
+  <div class="login-card">
 
-  <input placeholder="Full Name" [(ngModel)]="name">
-  <div class="error" *ngIf="errors.name">{{errors.name}}</div>
+    <div class="logo">
+      <div class="icon"><i class="fas fa-university"></i></div>
+      <h1>MPSTME Student Council</h1>
+      <p>Create your account</p>
+    </div>
 
-  <input placeholder="Email" [(ngModel)]="email">
-  <div class="error" *ngIf="errors.email">{{errors.email}}</div>
+    <!-- TOGGLE -->
+    <div class="toggle">
+      <button 
+        [class.active]="role==='admin'"
+        (click)="setRole('admin')">
+        <i class="fas fa-user-shield"></i> Admin
+      </button>
 
-  <input placeholder="Phone Number" [(ngModel)]="phone">
-  <div class="error" *ngIf="errors.phone">{{errors.phone}}</div>
+      <button 
+        [class.active]="role==='student'"
+        (click)="setRole('student')">
+        <i class="fas fa-user-graduate"></i> Student
+      </button>
+    </div>
 
-  <select [(ngModel)]="role" class="role-select">
-    <option value="student">Student</option>
-    <option value="committee">Committee</option>
-  </select>
+    <!-- NAME -->
+    <div class="input-group">
+      <label>Name</label>
+      <input type="text" [(ngModel)]="name" placeholder="Enter name">
+    </div>
 
-  <input type="password" placeholder="Password" [(ngModel)]="password">
-  <div class="error" *ngIf="errors.password">{{errors.password}}</div>
+    <!-- EMAIL -->
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" placeholder="Enter email">
+    </div>
 
-  <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword">
-  <div class="error" *ngIf="errors.confirmPassword">{{errors.confirmPassword}}</div>
+    <!-- PASSWORD -->
+    <div class="input-group">
+      <label>Password</label>
 
-  <button (click)="register()">Register</button>
+      <div class="password-box">
+        <input 
+          [type]="showPassword ? 'text' : 'password'" 
+          [(ngModel)]="password"
+          placeholder="Enter password">
+
+        <i class="fas"
+           [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+           (click)="togglePassword()"></i>
+      </div>
+    </div>
+
+    <!-- CONFIRM PASSWORD -->
+    <div class="input-group">
+      <label>Confirm Password</label>
+      <input 
+        [type]="showPassword ? 'text' : 'password'" 
+        [(ngModel)]="confirmPassword"
+        placeholder="Confirm password">
+    </div>
+
+    <!-- ERROR -->
+    <div class="error" *ngIf="error">
+      {{error}}
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" *ngIf="success">
+      {{success}}
+    </div>
+
+    <!-- BUTTON -->
+    <button class="login-btn" (click)="register()">
+      Sign Up →
+    </button>
+
+    <!-- LINK -->
+    <div class="hint">
+      Already have an account? 
+      <a routerLink="/login">Login</a>
+    </div>
+
+  </div>
 
 </div>
